@@ -12,6 +12,19 @@ Grenade::Grenade(double r, double c)
 	}
 }
 
+Grenade::Grenade(double r, double c, TeamID tid)
+{
+	int i;
+	row = r;
+	col = c;
+	double alpha = 2 * PI / NUM_BULLETS;	// bullet seperation angle
+	for (i = 0; i < NUM_BULLETS; i++)
+	{
+		bullets[i] = new Bullet(col, row, i * alpha, tid);
+	}
+	id = tid;
+}
+
 void Grenade::explode()
 {
 	int i;
@@ -47,4 +60,18 @@ void Grenade::simulateExplosion(int maze[MSZ][MSZ], double security_map[MSZ][MSZ
 	{
 		bullets[i]->simulateExplosion(maze, security_map);
 	}
+}
+
+bool Grenade::findEnemyByExplosion(int maze[MSZ][MSZ], Position enemy_pos)
+{
+	int i;
+
+	for (i = 0; i < NUM_BULLETS; i++)
+	{
+		if (bullets[i]->findEnemyByExplosion(maze, enemy_pos))
+			return true;
+		else
+			continue;
+	}
+	return false;
 }

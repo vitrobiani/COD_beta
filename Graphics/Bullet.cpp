@@ -13,6 +13,18 @@ Bullet::Bullet(double xx, double yy, double angle)
 	isMoving = false;
 }
 
+Bullet::Bullet(double xx, double yy, double angle, TeamID tid)
+{
+	x = xx;
+	y = yy;
+	dir_angle = angle;
+	dirX = cos(angle);
+	dirY = sin(angle);
+	speed = 0.3;
+	isMoving = false;
+	id = tid;
+}
+
 void Bullet::move(int maze[MSZ][MSZ])
 {
 	if (isMoving)
@@ -45,4 +57,38 @@ void Bullet::simulateExplosion(int maze[MSZ][MSZ], double security_map[MSZ][MSZ]
 		security_map[(int)y][(int)x] += SECURITY_FACTOR;
 		move(maze);
 	}
+}
+
+bool Bullet::moveTillEnemyOrWall(int maze[MSZ][MSZ], Position enemy_pos)
+{
+	if (isMoving)
+	{
+		x += speed * dirX;
+		y += speed * dirY;
+		if (maze[(int)y][(int)x] == WALL)
+		{
+			isMoving = false;
+			return false;
+		}
+		if ((int)x == enemy_pos.col && (int)y == enemy_pos.row)
+		{
+			isMoving = false;
+			return true;
+		}
+		return false;
+	}
+	return false;
+}
+
+bool Bullet::findEnemyByExplosion(int maze[MSZ][MSZ], Position enemy_pos)
+{
+	isMoving = true;
+	while (isMoving)
+	{
+		if (moveTillEnemyOrWall(maze, enemy_pos))
+			return true;
+		else
+			continue;
+	}
+	return false;
 }

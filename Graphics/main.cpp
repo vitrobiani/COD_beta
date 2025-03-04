@@ -36,6 +36,7 @@ double security_map[MSZ][MSZ] = {0};	// mey mey
 vector<double*> security_maps;
 
 bool setGridlines = false;
+bool showSecurityMap = false;
 
 void RestorePath(Cell* pc)
 {
@@ -278,8 +279,8 @@ void ShowDungeon()
 	{
 		for (j = 0; j < MSZ; j++)
 		{
-			s = security_map[i][j];
-			//s = 0;
+			if (showSecurityMap) s = security_map[i][j];
+			else s = 0;
 			//1. set color of cell
 			switch (maze[i][j])
 			{
@@ -311,11 +312,8 @@ void ShowDungeon()
 				glVertex2d(j + 1, i);
 				glEnd();
 			}
-
 		}
 	}
-
-
 }
 
 void GenerateSecurityMap()
@@ -344,8 +342,11 @@ void GenerateSecurityMapForSpsificTeam(int TeamNum)
 			for (int j = 0; j < GRENADE_SEC_MAP_PER_TEAM; j++)
 			{
 				Grenade* g = new Grenade(s->getPos().row, s->getPos().col);
-
-				g->simulateExplosion(maze, security_map);
+				
+				double clonedMap[MSZ][MSZ] = { 0 };
+				cloneSecurityMap(security_map, clonedMap);
+				g->simulateExplosion(maze, clonedMap);
+				cloneSecurityMapToPtr(clonedMap, security_maps.at(s->getID().team));
 			}
 		}
 	}
@@ -365,6 +366,12 @@ void display()
 	{
 		pg->show();
 	}
+	for (int i = 0; i < Soldier::Teams.size(); i++)
+		for (Soldier* s : Soldier::Teams.at(i)) {
+			Fighter* f = (Fighter*)(s);
+			if (f->getBullet())
+				f->getBullet()->show();
+		}
 
 	glutSwapBuffers(); // show all
 }
@@ -389,14 +396,6 @@ void init()
 	initSecurityMaps();
 }
 
-void cloneMaze(int source[MSZ][MSZ], int target[MSZ][MSZ]) {
-	for (int i = 0; i < MSZ; i++) {
-		for (int j = 0; j < MSZ; j++) {
-			target[i][j] = source[i][j];
-		}
-	}
-}
-
 void cloneAllSecMaps() {
 	for (int i = 0; i < security_maps.size(); i++) {
 		for (int j = 0; j < MSZ; j++) {
@@ -409,6 +408,7 @@ void cloneAllSecMaps() {
 
 void idle() 
 {
+	Sleep(50);
 	if (bulletFired)
 	{
 		pb->move(maze);
@@ -418,33 +418,17 @@ void idle()
 		pg->expand(maze);
 	}
 
-	Sleep(200);
-
 	cloneAllSecMaps();
 	for (int i = 0; i < security_maps.size(); i++)
-	{
 		GenerateSecurityMapForSpsificTeam(i);
+
+	for (int i = 0; i < Soldier::Teams.size(); i++)
+	{
+		for (Soldier* s : Soldier::Teams.at(i))
+		{
+			s->getState()->OnEnter(s);
+		}
 	}
-
-	double* sec_map = new double[MSZ * MSZ];
-	for (int i = 0; i < MSZ; i++)
-		for (int j = 0; j < MSZ; j++)
-			sec_map[MSZ * i + j] = security_map[i][j];
-
-	int row = Soldier::Teams.at(0).at(0)->getPos().row;
-	int col = Soldier::Teams.at(0).at(0)->getPos().col;
-	int clonedMaze[MSZ][MSZ] = { 0 };
-	cloneMaze(maze, clonedMaze);
-	maze[row][col] = SPACE;
-
-	int tr = Soldier::Teams.at(1).at(0)->getPos().row;
-	int tc = Soldier::Teams.at(1).at(0)->getPos().col;
-
-	Cell* c = Soldier::Teams.at(0).at(0)->runAS(clonedMaze, security_maps.at(0), Position{tr,tc});
-
-	maze[c->getRow()][c->getCol()] = SOLDIER;
-	Soldier::Teams.at(0).at(0)->setPos(Position{ c->getRow(), c->getCol() });
-	cloneAllSecMaps();
 
 	glutPostRedisplay(); // indirect call to display
 }
@@ -477,14 +461,15 @@ void mouse(int button, int state, int x, int y)
 }
 
 void keyboard(unsigned char key, int x, int y) {
-	if (key == 's')
-		GenerateSecurityMap();
 	if (key == 'r') {
 		SetupDungeon();
 	}
 	if (key == 'g')
 		if (setGridlines) setGridlines = false;
 		else setGridlines = true;
+	if (key == 's')
+		if (showSecurityMap) showSecurityMap = false;
+		else showSecurityMap = true;
 
 }
 

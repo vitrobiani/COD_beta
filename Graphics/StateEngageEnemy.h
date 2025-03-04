@@ -1,5 +1,8 @@
 #pragma once
 #include "State.h"
+#include "Fighter.h"
+#include "StateCallSquire.h"
+
 class StateEngageEnemy : public State
 {
 public:

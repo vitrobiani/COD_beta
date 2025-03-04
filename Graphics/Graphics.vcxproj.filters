@@ -51,7 +51,13 @@
     <ClCompile Include="StateSearchEnemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ComparePostions.cpp">
+    <ClCompile Include="StateCallSquire.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="definitions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Team.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -95,7 +101,10 @@
     <ClInclude Include="StateSearchEnemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ComparePostions.h">
+    <ClInclude Include="StateCallSquire.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Team.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

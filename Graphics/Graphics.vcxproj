@@ -121,7 +121,7 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="CompareCells.cpp" />
-    <ClCompile Include="ComparePostions.cpp" />
+    <ClCompile Include="definitions.cpp" />
     <ClCompile Include="Fighter.cpp" />
     <ClCompile Include="Grenade.cpp" />
     <ClCompile Include="main.cpp" />
@@ -129,14 +129,15 @@
     <ClCompile Include="Soldier.cpp" />
     <ClCompile Include="Squire.cpp" />
     <ClCompile Include="State.cpp" />
+    <ClCompile Include="StateCallSquire.cpp" />
     <ClCompile Include="StateEngageEnemy.cpp" />
     <ClCompile Include="StateSearchEnemy.cpp" />
+    <ClCompile Include="Team.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="CompareCells.h" />
-    <ClInclude Include="ComparePostions.h" />
     <ClInclude Include="definitions.h" />
     <ClInclude Include="Fighter.h" />
     <ClInclude Include="Grenade.h" />
@@ -145,8 +146,10 @@
     <ClInclude Include="Soldier.h" />
     <ClInclude Include="Squire.h" />
     <ClInclude Include="State.h" />
+    <ClInclude Include="StateCallSquire.h" />
     <ClInclude Include="StateEngageEnemy.h" />
     <ClInclude Include="StateSearchEnemy.h" />
+    <ClInclude Include="Team.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Graphics.rc" />

@@ -1,15 +1,13 @@
 #pragma once
 #include "State.h"
-#include "Soldier.h"
-#include "definitions.h"
-#include "StateEngageEnemy.h"
+#include "Fighter.h"
+#include "StateSearchEnemy.h"
 
-class StateSearchEnemy : public State
+class StateCallSquire : public State
 {
 public:
 	void OnEnter(Soldier* p);
 	void Transition(Soldier* p);
 	void OnExit(Soldier* p);
-
 };
 
