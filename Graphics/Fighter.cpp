@@ -7,18 +7,15 @@ Fighter::Fighter(Position start_pos, TeamID tid) : Soldier(start_pos, tid)
 	state = new StateSearchEnemy();
 	isReloading = false;
 	reloadTime = 0;
-	bullet = nullptr;
-	grenade = nullptr;
 }
 
-void Fighter::loadBullet()
+void Fighter::loadBullet(Position enemy_pos)
 {
 	if (ammo > 0)
 	{
-		Position enemy_pos = findNearestEnemy();
 		double angle = atan2(enemy_pos.row - pos.row, enemy_pos.col - pos.col);
-		Bullet* b = new Bullet(pos.col, pos.row, angle, id);
-		setBullet(b);
+		Bullet* b = new Bullet(pos.col+0.5, pos.row+0.5, angle, id);
+		Bullet::bullets.push_back(b);
 		b->setIsMoving(true);
 		setIsReloading(true);
 		reloadTime = RELOAD_TIME_FIGHTER;
@@ -29,14 +26,13 @@ void Fighter::loadBullet()
 	}
 }
 
-void Fighter::engageEnemy()
+void Fighter::engageEnemy(Position enemy_pos)
 {
 	if (isReloading)
 	{
 		reloadTime--;
-		bullet->move(maze);
 		if (reloadTime <= 0) isReloading = false;
 		return;
 	}
-	loadBullet();
+	loadBullet(enemy_pos);
 }

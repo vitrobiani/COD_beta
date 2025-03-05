@@ -3,7 +3,8 @@
 void StateEngageEnemy::OnEnter(Soldier* p)
 {
 	Fighter* f = (Fighter*)(p);
-	f->engageEnemy();
+	Position enemy_pos = Team::findNearestEnemy(f);
+	f->engageEnemy(enemy_pos);
 }
 
 void StateEngageEnemy::Transition(Soldier* p)

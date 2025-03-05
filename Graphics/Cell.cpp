@@ -25,6 +25,12 @@ Cell::Cell(int r, int c, int tr, int tc, double newg, Cell* p, double* sec_map)
 	f = h + g;
 	security_map = sec_map;
 }
+Cell::Cell(int r, int c,Cell* p)
+{
+	row = r;
+	col = c;
+	parent = p;
+}
 
 void Cell::ComputeH()
 {
@@ -32,7 +38,7 @@ void Cell::ComputeH()
 		h = abs(row - target_row) + abs(col - target_col);
 		return;
 	}
-	double dis = sqrt(pow(row - target_row, 2) + pow(col - target_col, 2));
-	double security = security_map[MSZ * row + col];
+	double dis = sqrt(pow(row - target_row, 2) + pow(col - target_col, 2)); // higher = more distant
+	double security = security_map[MSZ * row + col]; // higher = less secure
 	h = dis + security * SECURITY_COEFFICIENT;
 }

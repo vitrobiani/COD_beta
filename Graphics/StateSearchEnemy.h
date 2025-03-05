@@ -3,6 +3,7 @@
 #include "Soldier.h"
 #include "definitions.h"
 #include "StateEngageEnemy.h"
+#include "Team.h"
 
 class StateSearchEnemy : public State
 {

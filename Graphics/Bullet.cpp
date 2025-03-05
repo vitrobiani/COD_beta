@@ -1,6 +1,8 @@
 #include "Bullet.h"
 #include <math.h>
 
+
+vector<Bullet*> Bullet::bullets;
 // angle in radians
 Bullet::Bullet(double xx, double yy, double angle)
 {
@@ -9,7 +11,7 @@ Bullet::Bullet(double xx, double yy, double angle)
 	dir_angle = angle;
 	dirX = cos(angle);
 	dirY = sin(angle);
-	speed = 0.3;
+	speed = BULLET_SPEED;
 	isMoving = false;
 }
 
@@ -20,12 +22,12 @@ Bullet::Bullet(double xx, double yy, double angle, TeamID tid)
 	dir_angle = angle;
 	dirX = cos(angle);
 	dirY = sin(angle);
-	speed = 0.3;
+	speed = BULLET_SPEED;
 	isMoving = false;
 	id = tid;
 }
 
-void Bullet::move(int maze[MSZ][MSZ])
+Position Bullet::move(int maze[MSZ][MSZ])
 {
 	if (isMoving)
 	{
@@ -35,7 +37,13 @@ void Bullet::move(int maze[MSZ][MSZ])
 		{
 			isMoving = false;
 		}
+		if (maze[(int)y][(int)x] == SOLDIER)
+		{
+			isMoving = false;
+			return Position{ (int)x, (int)y };
+		}
 	}
+	return Position{ -1,-1 };
 }
 
 void Bullet::show()

@@ -2,6 +2,7 @@
 #include "State.h"
 #include "Fighter.h"
 #include "StateSearchEnemy.h"
+#include "Team.h"
 
 class StateCallSquire : public State
 {

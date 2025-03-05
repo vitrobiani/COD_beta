@@ -13,6 +13,7 @@ private:
 public:
 	Cell();
 	Cell(int r, int c, int tr, int tc, double newg, Cell* p, double* sec_map);
+	Cell(int r, int c, Cell* p);
 	int getRow() { return row; }
 	int getCol() { return col; }
 	Cell* getParent() { return parent; }

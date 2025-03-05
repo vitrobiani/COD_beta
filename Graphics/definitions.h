@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+
 using namespace std;
 
 const int MSZ = 100; 
@@ -21,6 +22,7 @@ const double SECURITY_FACTOR = 0.001;
 const double SECURITY_COEFFICIENT = 15;
 const int GRENADE_SEC_MAP_PER_TEAM = 30;
 const int IS_ENEMY_IN_SIGHT = 4;
+const double BULLET_SPEED = 0.3;
 
 const int GRENADE_SEC_MAP_AMOUNT = 1000;
 const int SEC_MAP_ITERATIONS = 20;
@@ -29,7 +31,7 @@ const int START_HP = 100;
 
 const int MAX_GRENADE_CAPACITY_SQUIRE = 20;
 const int MAX_BULLET_CAPACITY_SQUIRE = 200;
-const int MAX_BULLET_CAPACITY_FIGHTER = 100;
+const int MAX_BULLET_CAPACITY_FIGHTER = 10;
 const int MAX_GRENADE_CAPACITY_FIGHTER = 5;
 const int RELOAD_TIME_FIGHTER = 15;
 

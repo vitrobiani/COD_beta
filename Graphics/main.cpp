@@ -3,6 +3,7 @@
 #include <math.h>
 #include "glut.h"
 #include <queue>
+#include <sstream>
 #include "definitions.h"
 #include "Cell.h"
 #include <iostream>
@@ -12,6 +13,7 @@
 #include "Grenade.h"
 #include "Soldier.h"
 #include "Fighter.h"
+#include "Team.h"
 
 using namespace std;
 
@@ -35,8 +37,10 @@ int maze[MSZ][MSZ] = {0}; // WALLs
 double security_map[MSZ][MSZ] = {0};	// mey mey
 vector<double*> security_maps;
 
+
 bool setGridlines = false;
 bool showSecurityMap = false;
+bool paused = true;
 
 void RestorePath(Cell* pc)
 {
@@ -213,17 +217,17 @@ void initSoldierTeams()
 {
 	for (int i = 0; i < TEAM_NUM; i++)
 	{
+		int colors[3] = { rand() % 255, rand() % 255, rand() % 255 };
+		Team* t = new Team(colors);
 		int r = rand() % NUM_ROOMS;
 		Room* room = rooms[r];
 		for (int j = 0; j < TEAM_SIZE; j++) {
 			int row = room->getCenterY() - room->getHeight() / 2 + (rand() % room->getHeight());
 			int col = room->getCenterX() - room->getWidth() / 2 + (rand() % room->getWidth());
 			Position p = { row , col};
-			TeamID t = { i, j };
-			Fighter* s = new Fighter(p, t);
-			Soldier::addSoldier(s);
-			cout << "Soldier " << s->getPos().col << " " << s->getPos().row << " added\n";
+			t->addSoldier(p);
 		}
+		Team::Teams.push_back(t);
 	}
 }
 
@@ -257,13 +261,11 @@ void SetupDungeon()
 	BuildPathBetweenRooms();
 
 	initSoldierTeams();
-	int k, l;
-	for (k = 0; k < Soldier::Teams.size(); k++)
+	for (Team* t : Team::Teams) 
 	{
-		for (l = 0; l < Soldier::Teams.at(k).size(); l++)
+		for (Soldier* s : t->getSoldiers())
 		{
-			Position p = Soldier::Teams.at(k).at(l)->getPos();
-			cout << "Soldier " << p.col << " " << p.row << " added\n";
+			Position p = s->getPos();
 			maze[p.row][p.col] = SOLDIER;
 		}
 	}
@@ -291,7 +293,14 @@ void ShowDungeon()
 				glColor3d(0.3, 0.3, 0.4); // dark gray
 				break;
 			case SOLDIER:
-				glColor3d(1, 0, 0); // red
+				//glColor3d(1, 0, 0); // red
+				for (Team* t : Team::Teams) {
+					for (Soldier* s : t->getSoldiers()) {
+						if (s->getPos().row == i && s->getPos().col == j) {
+							glColor3d((t->getTeamColor())[0]/(double)255.0, (t->getTeamColor())[1]/ (double)255.0, (t->getTeamColor())[2]/ (double)255.0);
+						}
+					}
+				}
 				break;
 			}
 			// show cell
@@ -334,22 +343,55 @@ void GenerateSecurityMap()
 
 void GenerateSecurityMapForSpsificTeam(int TeamNum)
 {
-	for (int i = 0; i < Soldier::Teams.size() ; i++)
+	for (Team* t : Team::Teams) 
 	{
-		if (i == TeamNum) continue;
-		for (Soldier* s: Soldier::Teams.at(i))
+		if (t->getTeamID().team == TeamNum) continue;
+		for (Soldier* s : t->getSoldiers())
 		{
-			for (int j = 0; j < GRENADE_SEC_MAP_PER_TEAM; j++)
-			{
-				Grenade* g = new Grenade(s->getPos().row, s->getPos().col);
-				
-				double clonedMap[MSZ][MSZ] = { 0 };
-				cloneSecurityMap(security_map, clonedMap);
-				g->simulateExplosion(maze, clonedMap);
-				cloneSecurityMapToPtr(clonedMap, security_maps.at(s->getID().team));
-			}
+			Grenade* g = new Grenade(s->getPos().row, s->getPos().col);
+			
+			double clonedMap[MSZ][MSZ] = { 0 };
+			cloneSecurityMap(security_map, clonedMap);
+			g->simulateExplosion(maze, clonedMap);
+			cloneSecurityMapToPtr(clonedMap, security_maps.at(s->getID().team));
 		}
 	}
+}
+
+void drawHUD()
+{
+    int yOffset = HEIGHT - 20; // Start drawing from the top of the screen
+    for (Team* t : Team::Teams)
+    {
+        for (Soldier* s : t->getSoldiers())
+        {
+            Position p = s->getPos();
+            const char* type = s->getType();
+            //const char* state = s->getState() ? s->getState()->getName() : "None";
+			const char* state = "omer";
+            int ammo = s->getAmmo();
+            int grenades = s->getGrenades();
+
+            // Draw the HUD text
+            glColor3d(0, 0, 0); // Black color for text
+            glRasterPos2i(10, yOffset);
+            stringstream ss;
+            ss << "Type: " << type << ", State: " << state << ", Ammo: " << ammo << ", Grenades: " << grenades;
+            string hudText = ss.str();
+            for (char c : hudText)
+            {
+                glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+            }
+
+            // Draw the connecting line
+            glBegin(GL_LINES);
+            glVertex2i(10, yOffset - 5);
+            glVertex2i(p.col, HEIGHT - p.row);
+            glEnd();
+
+            yOffset -= 20; // Move to the next line
+        }
+    }
 }
 
 void display()
@@ -366,12 +408,8 @@ void display()
 	{
 		pg->show();
 	}
-	for (int i = 0; i < Soldier::Teams.size(); i++)
-		for (Soldier* s : Soldier::Teams.at(i)) {
-			Fighter* f = (Fighter*)(s);
-			if (f->getBullet())
-				f->getBullet()->show();
-		}
+	for (Bullet* b : Bullet::bullets)
+		b->show();
 
 	glutSwapBuffers(); // show all
 }
@@ -418,15 +456,44 @@ void idle()
 		pg->expand(maze);
 	}
 
-	cloneAllSecMaps();
-	for (int i = 0; i < security_maps.size(); i++)
-		GenerateSecurityMapForSpsificTeam(i);
-
-	for (int i = 0; i < Soldier::Teams.size(); i++)
+	if (!paused)
 	{
-		for (Soldier* s : Soldier::Teams.at(i))
+		cloneAllSecMaps();
+		for (int i = 0; i < security_maps.size(); i++)
+			GenerateSecurityMapForSpsificTeam(i);
+
+		for (Team* t : Team::Teams)
 		{
-			s->getState()->OnEnter(s);
+			for (Soldier* s : t->getSoldiers())
+			{
+				s->getState()->OnEnter(s);
+
+			}
+		}
+		for (Bullet* b : Bullet::bullets)
+		{
+			Position p = b->move(maze);
+			if (p.row != -1 && p.col != -1) {
+				for (Team* t : Team::Teams)
+				{
+					for (Soldier* s : t->getSoldiers())
+					{
+						if (s->getPos().row == p.row && s->getPos().col == p.col)
+						{
+							s->setHP(s->getHP() - 10);
+							printf("Soldier hit by bullet, current hp: %d\n", s->getHP());
+						}
+					}
+				}
+				b->setIsMoving(true);
+			}
+		}
+		for (Bullet* b : Bullet::bullets)
+		{
+			if (!b && !b->getIsMoving())
+			{
+				Bullet::bullets.erase(find(Bullet::bullets.begin(), Bullet::bullets.end(), b));
+			}
 		}
 	}
 
@@ -462,15 +529,16 @@ void mouse(int button, int state, int x, int y)
 
 void keyboard(unsigned char key, int x, int y) {
 	if (key == 'r') {
-		SetupDungeon();
+		init();
 	}
 	if (key == 'g')
-		if (setGridlines) setGridlines = false;
-		else setGridlines = true;
+		setGridlines = !setGridlines;
 	if (key == 's')
-		if (showSecurityMap) showSecurityMap = false;
-		else showSecurityMap = true;
-
+		showSecurityMap = !showSecurityMap;
+	if (key == ' ')
+		paused = !paused;
+	if (key == 'q')
+		exit(0);
 }
 
 
