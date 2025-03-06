@@ -10,7 +10,9 @@ void StateRestock::OnEnter(Soldier* p)
 void StateRestock::Transition(Soldier* p)
 {
 	OnExit(p);
+	State* oldState = p->getState();
 	p->setState(new StateFindTeammates());
+	delete oldState;
 	p->getState()->OnEnter(p);
 }
 

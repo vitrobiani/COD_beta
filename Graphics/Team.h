@@ -13,7 +13,7 @@ private:
 	int teamSize;
 public:
 	static vector<Team*> Teams;
-	static queue<Soldier*> callingSquires;
+	queue<Soldier*> callingSquires;
 
 	Team(vector<array<double, 3>> tc);
 	TeamID generateTeamID();

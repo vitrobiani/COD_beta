@@ -2,7 +2,7 @@
 #include "Fighter.h"
 
 vector<Team*> Team::Teams;
-queue<Soldier*> Team::callingSquires;
+//queue<Soldier*> Team::callingSquires;
 Team::Team(vector<array<double, 3>> tc)
 {
 	teamColor = tc;

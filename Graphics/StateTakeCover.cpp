@@ -20,7 +20,9 @@ void StateTakeCover::OnEnter(Soldier* p)
 void StateTakeCover::Transition(Soldier* p)
 {
 	OnExit(p);
+	State* oldState = p->getState();
 	p->setState(new StateProvideHelp());
+	delete oldState;
 	p->getState()->OnEnter(p);
 }
 

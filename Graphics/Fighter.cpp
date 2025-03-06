@@ -68,9 +68,13 @@ void Fighter::moveToEnemy(Position enemy_pos)
 {
 	if (isMoving)
 	{
+		/*int** clonedMaze = (int**)malloc(sizeof(int) * MSZ * MSZ);
+		if (clonedMaze == nullptr)
+			return;*/
 		int clonedMaze[MSZ][MSZ] = { 0 };
 		cloneMaze(maze, clonedMaze);
 		Cell* c = runAS(clonedMaze, security_maps.at(getID().team), enemy_pos);
+		//free(clonedMaze);
 		move(Position{ c->getRow(), c->getCol() });
 		if (isEnemyInSight(enemy_pos))
 			state->Transition(this); // Transition to attack state
@@ -81,7 +85,7 @@ void Fighter::addToSquireQueue()
 {
 	if (!isCallingSquire) {
 		isCallingSquire = true;
-		Team::callingSquires.push(this);
+		Team::Teams.at(id.team)->callingSquires.push(this);
 	}
 }
 

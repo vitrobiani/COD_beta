@@ -11,7 +11,9 @@ void StateCallSquire::OnEnter(Soldier* p)
 void StateCallSquire::Transition(Soldier* p)
 {
 	OnExit(p);
+	State* oldState = p->getState();
 	p->setState(new StateSearchEnemy());
+	delete oldState;
 	p->getState()->OnEnter(p);
 }
 

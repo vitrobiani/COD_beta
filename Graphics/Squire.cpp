@@ -26,8 +26,8 @@ void Squire::moveToTeammate(Position teammate_pos)
 
 void Squire::doesAnybodyNeedHelp()
 { 
-	bool exitTakeCover = !Team::callingSquires.empty() && !getState()->toString().compare((new StateTakeCover)->toString());
-	bool exitProvideHelp = Team::callingSquires.empty() && !getState()->toString().compare((new StateProvideHelp)->toString());
+	bool exitTakeCover = !Team::Teams.at(id.team)->callingSquires.empty() && (getState()->toString().compare((new StateTakeCover)->toString()) == 0 );
+	bool exitProvideHelp = Team::Teams.at(id.team)->callingSquires.empty() && (getState()->toString().compare((new StateProvideHelp)->toString()) == 0);
 	if(exitTakeCover || exitProvideHelp)
 		this->getState()->Transition(this);
 }

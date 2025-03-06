@@ -5,7 +5,7 @@
 void StateProvideHelp::OnEnter(Soldier* p)
 {
 	Squire* s = (Squire*)(p);
-	Fighter* f = (Fighter*)(Team::callingSquires.front());
+	Fighter* f = (Fighter*)(Team::Teams.at(s->getID().team)->callingSquires.front());
 	int code = s->HelpSoldier(f);
 	switch (code)
 	{
@@ -14,7 +14,7 @@ void StateProvideHelp::OnEnter(Soldier* p)
 		s->moveToTeammate(f->getPos());
 		break;
 	case HELPED_SOLDIER:
-		Team::callingSquires.pop();
+		Team::Teams.at(s->getID().team)->callingSquires.pop();
 		break;
 	case RESTOCK:
 		restock = true;
@@ -29,10 +29,12 @@ void StateProvideHelp::OnEnter(Soldier* p)
 void StateProvideHelp::Transition(Soldier* p)
 {
 	OnExit(p);
+	State* oldState = p->getState();
 	if (restock)
 		p->setState(new StateRestock());
 	else
 		p->setState(new StateTakeCover());
+	delete oldState;
 	p->getState()->OnEnter(p);
 }
 
