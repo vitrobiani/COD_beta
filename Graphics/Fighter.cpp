@@ -7,6 +7,8 @@ Fighter::Fighter(Position start_pos, TeamID tid) : Soldier(start_pos, tid)
 	state = new StateSearchEnemy();
 	isReloading = false;
 	reloadTime = 0;
+	ammo_th = 2;
+	isCallingSquire = false;
 }
 
 void Fighter::loadBullet(Position enemy_pos)
@@ -28,11 +30,66 @@ void Fighter::loadBullet(Position enemy_pos)
 
 void Fighter::engageEnemy(Position enemy_pos)
 {
+	if (hp < hp_th)
+		state->Transition(this);
+
 	if (isReloading)
 	{
 		reloadTime--;
 		if (reloadTime <= 0) isReloading = false;
 		return;
 	}
-	loadBullet(enemy_pos);
+	else
+	{
+		loadBullet(enemy_pos);
+	}
+
+	if (!isEnemyInSight(enemy_pos))
+	{
+		state->Transition(this);
+	}
 }
+
+bool Fighter::isEnemyInSight(Position enemy_pos) 
+{
+	for (int i = 0; i < IS_ENEMY_IN_SIGHT; i++)
+	{
+		Grenade* g = new Grenade(getPos().row, getPos().col);
+
+		if(g->findEnemyByExplosion(maze, enemy_pos))
+			return true;
+        else
+			continue;
+	}
+	return false;
+}
+
+void Fighter::moveToEnemy(Position enemy_pos)
+{
+	if (isMoving)
+	{
+		int clonedMaze[MSZ][MSZ] = { 0 };
+		cloneMaze(maze, clonedMaze);
+		Cell* c = runAS(clonedMaze, security_maps.at(getID().team), enemy_pos);
+		move(Position{ c->getRow(), c->getCol() });
+		if (isEnemyInSight(enemy_pos))
+			state->Transition(this); // Transition to attack state
+	}
+}
+
+void Fighter::addToSquireQueue() 
+{
+	if (!isCallingSquire) {
+		isCallingSquire = true;
+		Team::callingSquires.push(this);
+	}
+}
+
+void Fighter::checkIfFitForFight()
+{
+	if (ammo > ammo_th && hp > hp_th) {
+		isCallingSquire = false;
+		state->Transition(this);
+	}
+}
+

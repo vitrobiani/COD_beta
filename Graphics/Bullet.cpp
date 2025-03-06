@@ -1,7 +1,6 @@
 #include "Bullet.h"
 #include <math.h>
 
-
 vector<Bullet*> Bullet::bullets;
 // angle in radians
 Bullet::Bullet(double xx, double yy, double angle)
@@ -13,6 +12,7 @@ Bullet::Bullet(double xx, double yy, double angle)
 	dirY = sin(angle);
 	speed = BULLET_SPEED;
 	isMoving = false;
+	isVirtual = true;
 }
 
 Bullet::Bullet(double xx, double yy, double angle, TeamID tid)
@@ -25,6 +25,7 @@ Bullet::Bullet(double xx, double yy, double angle, TeamID tid)
 	speed = BULLET_SPEED;
 	isMoving = false;
 	id = tid;
+	isVirtual = false;
 }
 
 Position Bullet::move(int maze[MSZ][MSZ])
@@ -37,13 +38,49 @@ Position Bullet::move(int maze[MSZ][MSZ])
 		{
 			isMoving = false;
 		}
-		if (maze[(int)y][(int)x] == SOLDIER)
+		if (maze[(int)y][(int)x] == SOLDIER && !isVirtual)
 		{
-			isMoving = false;
-			return Position{ (int)x, (int)y };
+			Position hitPos = { (int)y, (int)x };
+			Soldier* hitSoldier = findSoldierAtPosition(hitPos);
+			if (hitSoldier != nullptr)
+			{
+				cout << "Bullet hit a soldier at position (" << hitPos.row << ", " << hitPos.col << ")\n";
+				if (isEnemyTeam(hitSoldier))
+				{
+					cout << "The hit soldier is on an enemy team. Soldier Team: " << hitSoldier->getID().team << "Bullet Team: "<< id.team << "\n";
+					hitSoldier->hitByBullet();
+					cout << "The hit soldier's HP is now: " << hitSoldier->getHP() << "\n";
+					isMoving = false;
+				}
+				else
+				{
+					cout << "The hit soldier is on the same team.\n";
+				}
+			}
+			return hitPos;
 		}
 	}
 	return Position{ -1,-1 };
+}
+
+Soldier* Bullet::findSoldierAtPosition(Position pos)
+{
+	for (Team* t : Team::Teams)
+	{
+		for (Soldier* s : t->getSoldiers())
+		{
+			if (s->getPos().row == pos.row && s->getPos().col == pos.col)
+			{
+				return s;
+			}
+		}
+	}
+	return nullptr;
+}
+
+bool Bullet::isEnemyTeam(Soldier* soldier)
+{
+	return soldier->getID().team != id.team;
 }
 
 void Bullet::show()
@@ -100,3 +137,4 @@ bool Bullet::findEnemyByExplosion(int maze[MSZ][MSZ], Position enemy_pos)
 	}
 	return false;
 }
+

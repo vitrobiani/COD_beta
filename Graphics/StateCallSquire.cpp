@@ -2,8 +2,10 @@
 
 void StateCallSquire::OnEnter(Soldier* p)
 {
-	Cell* c = Team::runBFS(maze, p, security_maps.at(p->getID().team));
-	p->move(Position{ c->getRow(), c->getCol() });
+	Fighter* f = (Fighter*)(p);
+	f->move(Team::findSafestPosition(maze, p, security_maps.at(p->getID().team)));
+	f->addToSquireQueue();
+	f->checkIfFitForFight();
 }
 
 void StateCallSquire::Transition(Soldier* p)

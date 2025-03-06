@@ -7,12 +7,15 @@ Soldier::Soldier(Position start_pos, TeamID tid)
 	id = tid;
 	isMoving = false;
 	state = nullptr;
+	hp_th = 20;
 }
 
 void Soldier::move(Position p)
 {
     if (isMoving)
     {
+        if (maze[p.row][p.col] == SOLDIER)
+            return;
         maze[getPos().row][getPos().col] = SPACE;
         maze[p.row][p.col] = SOLDIER;
         setPos(p);
@@ -43,6 +46,8 @@ Cell* Soldier::ASIteration(priority_queue<Cell*, vector<Cell*>, CompareCells>& g
     int col = pCurrent->getCol();
     int target_row = target.row;
     int target_col = target.col;
+    if (row == target_row && col == target_col)
+        return pCurrent;
 
     maze[row][col] = BLACK;
 
@@ -80,49 +85,8 @@ Cell* Soldier::RestorePath(Cell* pc) {
     return pc; // Return the next step
 }
 
-bool Soldier::isEnemyInSight(Position enemy_pos) 
+void Soldier::hitByBullet()
 {
-	for (int i = 0; i < IS_ENEMY_IN_SIGHT; i++)
-	{
-		Grenade* g = new Grenade(getPos().row, getPos().col);
-
-		if(g->findEnemyByExplosion(maze, enemy_pos))
-			return true;
-        else
-			continue;
-	}
-	return false;
+	hp -= BULLET_DAMAGE;
 }
 
-void Soldier::moveToEnemy(Position enemy_pos)
-{
-	if (isMoving)
-	{
-		int clonedMaze[MSZ][MSZ] = { 0 };
-		cloneMaze(maze, clonedMaze);
-		maze[getPos().row][getPos().col] = SPACE;
-		Cell* c = runAS(clonedMaze, security_maps.at(getID().team), enemy_pos);
-		maze[c->getRow()][c->getCol()] = SOLDIER;
-		setPos(Position{ c->getRow(), c->getCol() });
-		if (isEnemyInSight(enemy_pos))
-			state->Transition(this); // Transition to attack state
-	}
-}
-
-bool isBulletCloseEnough(Position p1, Position p2)
-{
-	return sqrt(pow(p1.row - p2.row, 2)+pow(p1.col - p2.col, 2))<= 5;
-}
-
-bool Soldier::checkHitByBullet()
-{
-    for (Bullet* b : Bullet::bullets) {
-        if (b->getIsMoving() && isBulletCloseEnough(b->getPos(), getPos()))
-        {
-            hp -= 10;
-            //b->setIsMoving(false);
-            return true;
-        }
-    }
-    return false;
-}

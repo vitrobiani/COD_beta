@@ -1,6 +1,7 @@
 #pragma once
 #include "definitions.h"
 #include "glut.h"
+#include "Team.h"
 
 class Bullet
 {
@@ -9,7 +10,7 @@ private:
 	double dir_angle;
 	double dirX, dirY;
 	double speed;
-	bool isMoving;
+	bool isMoving, isVirtual;
 	TeamID id;
 public:
 	static vector<Bullet*> bullets;
@@ -23,5 +24,7 @@ public:
 	void simulateExplosion(int maze[MSZ][MSZ], double security_map[MSZ][MSZ]);
 	bool findEnemyByExplosion(int maze[MSZ][MSZ], Position enemy_pos);
 	bool moveTillEnemyOrWall(int maze[MSZ][MSZ], Position enemy_pos);
+	Soldier* findSoldierAtPosition(Position pos);
+	bool isEnemyTeam(Soldier* soldier);
 };
 

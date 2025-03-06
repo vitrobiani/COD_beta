@@ -1,4 +1,5 @@
 #pragma once
+#include "memory"
 #include "Bullet.h"
 #include "definitions.h"
 
@@ -8,11 +9,13 @@ class Grenade
 {
 private:
 	double row, col;
-	Bullet* bullets[NUM_BULLETS];
+	//Bullet* bullets[NUM_BULLETS];
+	unique_ptr<Bullet> bullets[NUM_BULLETS];
 	TeamID id;
 public:
 	Grenade(double r, double c);
 	Grenade(double r, double c, TeamID tid);
+	~Grenade();
 	void explode();
 	void expand(int maze[MSZ][MSZ]);
 	void show();

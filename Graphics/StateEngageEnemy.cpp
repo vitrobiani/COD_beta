@@ -9,8 +9,13 @@ void StateEngageEnemy::OnEnter(Soldier* p)
 
 void StateEngageEnemy::Transition(Soldier* p)
 {
+	Fighter* f = (Fighter*)(p);
 	OnExit(p);
-	p->setState(new StateCallSquire());
+	if (f->getHP() < f->getHP_TH() || f->getAmmo() <= 0)
+		p->setState(new StateCallSquire());
+	else
+		f->setState(new StateSearchEnemy());
+
 	p->getState()->OnEnter(p);
 }
 

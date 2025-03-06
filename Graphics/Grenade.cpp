@@ -8,7 +8,8 @@ Grenade::Grenade(double r, double c)
 	double alpha = 2 * PI / NUM_BULLETS;	// bullet seperation angle
 	for (i = 0; i < NUM_BULLETS; i++)
 	{
-		bullets[i] = new Bullet(col, row, i * alpha);
+		//bullets[i] = new Bullet(col, row, i * alpha);
+		bullets[i].reset(new Bullet(col, row, i * alpha));
 	}
 }
 
@@ -20,9 +21,20 @@ Grenade::Grenade(double r, double c, TeamID tid)
 	double alpha = 2 * PI / NUM_BULLETS;	// bullet seperation angle
 	for (i = 0; i < NUM_BULLETS; i++)
 	{
-		bullets[i] = new Bullet(col, row, i * alpha, tid);
+		//bullets[i] = new Bullet(col, row, i * alpha, tid);
+		bullets[i].reset(new Bullet(col, row, i * alpha, tid));
 	}
 	id = tid;
+}
+
+Grenade::~Grenade()
+{
+	int i;
+	for (i = 0; i < NUM_BULLETS; i++)
+	{
+		//bullets[i].reset();
+		bullets[i].release();
+	}
 }
 
 void Grenade::explode()

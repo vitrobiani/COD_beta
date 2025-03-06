@@ -9,7 +9,8 @@ class Fighter: public Soldier
 {
 private:
 	int ammo, grenade_count;
-	bool isReloading;
+	int ammo_th;
+	bool isReloading, isCallingSquire;
 	int reloadTime;
 public:
 	Fighter(Position start_pos, TeamID tid);
@@ -17,10 +18,15 @@ public:
 	void setAmmo(int a) { ammo = a; };
 	void setGrenadeCount(int g) { grenade_count = g; };
 	void setIsReloading(bool r) { isReloading = r; };
+	void setIsCallingSquire(bool c) { isCallingSquire = c; };
 	void loadBullet(Position enemy_pos);
 	void loadGrenade();
     int getAmmo() const { return ammo; }
     int getGrenadeCount() const { return grenade_count; }
+	bool isEnemyInSight(Position enemy_pos);
+	void moveToEnemy(Position enemy_pos);
+	void addToSquireQueue();
+	void checkIfFitForFight();
 
     const char* getType() override { return "Fighter"; }
     int getAmmo() override { return ammo; }

@@ -131,7 +131,11 @@
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateCallSquire.cpp" />
     <ClCompile Include="StateEngageEnemy.cpp" />
+    <ClCompile Include="StateFindTeammates.cpp" />
+    <ClCompile Include="StateProvideHelp.cpp" />
+    <ClCompile Include="StateRestock.cpp" />
     <ClCompile Include="StateSearchEnemy.cpp" />
+    <ClCompile Include="StateTakeCover.cpp" />
     <ClCompile Include="Team.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -148,7 +152,11 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="StateCallSquire.h" />
     <ClInclude Include="StateEngageEnemy.h" />
+    <ClInclude Include="StateFindTeammates.h" />
+    <ClInclude Include="StateProvideHelp.h" />
+    <ClInclude Include="StateRestock.h" />
     <ClInclude Include="StateSearchEnemy.h" />
+    <ClInclude Include="StateTakeCover.h" />
     <ClInclude Include="Team.h" />
   </ItemGroup>
   <ItemGroup>

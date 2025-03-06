@@ -27,6 +27,7 @@ const double WALL_COST = 5;
 const double SPACE_COST = 1;
 
 Room* rooms[NUM_ROOMS];
+vector<Room*> rooms_for_summoning;
 
 bool bulletFired = false;
 bool grenadeThrown = false;
@@ -36,6 +37,8 @@ Grenade* pg = nullptr;
 int maze[MSZ][MSZ] = {0}; // WALLs
 double security_map[MSZ][MSZ] = {0};	// mey mey
 vector<double*> security_maps;
+vector<Position> HP_Stashes;
+vector<Position> Ammo_Stashes;
 
 
 bool setGridlines = false;
@@ -213,20 +216,52 @@ void BuildPathBetweenRooms()
 	}
 }
 
+void initAmmoAndHealthPackStashes() {
+	for (int i = 0; i < AMMO_STASH_AMOUNT; i++)
+	{
+		int r = rand() % rooms_for_summoning.size();
+		Room* room = rooms_for_summoning.at(r);
+		rooms_for_summoning.erase(rooms_for_summoning.begin() + r);
+		int row = room->getCenterY() - room->getHeight() / 2 + (rand() % room->getHeight());
+		int col = room->getCenterX() - room->getWidth() / 2 + (rand() % room->getWidth());
+		maze[row][col] = AMMO_STASH;
+		Ammo_Stashes.push_back(Position{ row, col });
+	}
+	for (int i = 0; i < HEALTH_PACK_STASH_AMOUNT; i++)
+	{
+		int r = rand() % rooms_for_summoning.size();
+		Room* room = rooms_for_summoning.at(r);
+		rooms_for_summoning.erase(rooms_for_summoning.begin() + r);
+		int row = room->getCenterY() - room->getHeight() / 2 + (rand() % room->getHeight());
+		int col = room->getCenterX() - room->getWidth() / 2 + (rand() % room->getWidth());
+		maze[row][col] = HP_STASH;
+		HP_Stashes.push_back(Position{ row, col });
+	}
+}
+
 void initSoldierTeams()
 {
+	vector<array<double, 3>> colors1 = { team_colors.at("FPurple"), team_colors.at("SPurple") };
+    vector<array<double, 3>> colors2 = { team_colors.at("FOrange"), team_colors.at("SOrange") };
+    vector<vector<array<double, 3>>> colors = { colors1, colors2 };
+
 	for (int i = 0; i < TEAM_NUM; i++)
 	{
-		int colors[3] = { rand() % 255, rand() % 255, rand() % 255 };
-		Team* t = new Team(colors);
-		int r = rand() % NUM_ROOMS;
-		Room* room = rooms[r];
+		Team* t = new Team(colors.at(i));
+		int r = rand() % rooms_for_summoning.size();
+		Room* room = rooms_for_summoning.at(r);
+		rooms_for_summoning.erase(rooms_for_summoning.begin() + r);
 		for (int j = 0; j < TEAM_SIZE; j++) {
 			int row = room->getCenterY() - room->getHeight() / 2 + (rand() % room->getHeight());
 			int col = room->getCenterX() - room->getWidth() / 2 + (rand() % room->getWidth());
-			Position p = { row , col};
-			t->addSoldier(p);
+			Position p = { row , col };
+			t->addSoldier(p, true);
 		}
+		t->addSoldier(Position{
+			room->getCenterY() - room->getHeight() / 2 + (rand() % room->getHeight()),
+			room->getCenterX() - room->getWidth() / 2 + (rand() % room->getWidth()) 
+			}, 
+			false);
 		Team::Teams.push_back(t);
 	}
 }
@@ -251,6 +286,7 @@ void SetupDungeon()
 		} while (hasOverlap); // check the validity of the room
 			
 		rooms[i] = new Room(cx, cy, w, h,maze);
+		rooms_for_summoning.push_back(rooms[i]);
 	}
 
 	for (i = 0; i < NUM_OBSTACLES; i++)
@@ -269,7 +305,30 @@ void SetupDungeon()
 			maze[p.row][p.col] = SOLDIER;
 		}
 	}
+	initAmmoAndHealthPackStashes();
+}
 
+void renderBitmapString(float x, float y, void* font, const string& str) {
+    glRasterPos2f(x, y);
+    for (char c : str) {
+        glutBitmapCharacter(font, c);
+    }
+}
+
+void drawSoldierNumber(int number, int x, int y) {
+    glColor3d(0, 0, 0); // White text for contrast
+
+    //glDisable(GL_DEPTH_TEST); // Disable depth test only for text
+
+    glRasterPos2f(x + 0.4, y + 0.4); // Center inside the soldier
+
+    string numStr = to_string(number);
+    for (char c : numStr) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, c);
+    }
+	//glEnable(GL_DEPTH_TEST);
+
+    //glColor3d(0.3, 0.3, 0.3); // White text for contrast
 }
 
 void ShowDungeon()
@@ -292,13 +351,23 @@ void ShowDungeon()
 			case WALL:
 				glColor3d(0.3, 0.3, 0.4); // dark gray
 				break;
+			case AMMO_STASH:
+				glColor3d(8 / (double)255, 255 / (double)255, 8/(double)255); // dark green
+				break;
+			case HP_STASH:
+				glColor3d(214 / (double)255, 0, 28 / (double)255); // christmas red
+				break;
 			case SOLDIER:
 				//glColor3d(1, 0, 0); // red
 				for (Team* t : Team::Teams) {
 					for (Soldier* s : t->getSoldiers()) {
 						if (s->getPos().row == i && s->getPos().col == j) {
-							glColor3d((t->getTeamColor())[0]/(double)255.0, (t->getTeamColor())[1]/ (double)255.0, (t->getTeamColor())[2]/ (double)255.0);
+							if(!strcmp(s->getType(), "Fighter"))
+								glColor3d(t->getFighterColor()[0], t->getFighterColor()[1], t->getFighterColor()[2]);
+							else
+								glColor3d(t->getSquireColor()[0], t->getSquireColor()[1], t->getSquireColor()[2]);
 						}
+
 					}
 				}
 				break;
@@ -337,6 +406,7 @@ void GenerateSecurityMap()
 			Grenade* g = new Grenade(rand() % MSZ, rand() % MSZ);
 
 			g->simulateExplosion(maze, security_map);
+			delete g;
 		}
 	}
 }
@@ -360,37 +430,26 @@ void GenerateSecurityMapForSpsificTeam(int TeamNum)
 
 void drawHUD()
 {
-    int yOffset = HEIGHT - 20; // Start drawing from the top of the screen
-    for (Team* t : Team::Teams)
-    {
-        for (Soldier* s : t->getSoldiers())
-        {
-            Position p = s->getPos();
-            const char* type = s->getType();
-            //const char* state = s->getState() ? s->getState()->getName() : "None";
-			const char* state = "omer";
-            int ammo = s->getAmmo();
-            int grenades = s->getGrenades();
+	float y_offset = MSZ - 2;
+    float x_offset = 1; 
 
-            // Draw the HUD text
-            glColor3d(0, 0, 0); // Black color for text
-            glRasterPos2i(10, yOffset);
+    glColor3d(0, 0, 0); 
+    int soldierIndex = 1;
+
+    for (Team* t : Team::Teams) {
+        for (Soldier* s : t->getSoldiers()) {
             stringstream ss;
-            ss << "Type: " << type << ", State: " << state << ", Ammo: " << ammo << ", Grenades: " << grenades;
-            string hudText = ss.str();
-            for (char c : hudText)
-            {
-                glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
-            }
+            ss << " [" << (dynamic_cast<Fighter*>(s) ? "Fighter" : "Squire") << "] "
+               << "HP: " << s->getHP() << " Ammo: " << s->getAmmo() << " State: " << s->getState()->toString()
+				<< " Team: " << ((t->getTeamID().team == 0) ? "Purple":"Orange");
+            renderBitmapString(x_offset, y_offset,GLUT_BITMAP_HELVETICA_10, ss.str());
 
-            // Draw the connecting line
-            glBegin(GL_LINES);
-            glVertex2i(10, yOffset - 5);
-            glVertex2i(p.col, HEIGHT - p.row);
-            glEnd();
-
-            yOffset -= 20; // Move to the next line
+            y_offset -= 2; // Move down for next soldier
+            if (y_offset < MSZ - 10) break; // Prevent overlapping
         }
+		x_offset += MSZ / 2;
+		y_offset = MSZ - 2;
+		soldierIndex = 1;
     }
 }
 
@@ -399,6 +458,7 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT); // clean frame buffer
 
 	ShowDungeon();
+	drawHUD();
 
 	if (pb != nullptr)
 	{
@@ -446,7 +506,7 @@ void cloneAllSecMaps() {
 
 void idle() 
 {
-	Sleep(50);
+	Sleep(75);
 	if (bulletFired)
 	{
 		pb->move(maze);
@@ -467,34 +527,26 @@ void idle()
 			for (Soldier* s : t->getSoldiers())
 			{
 				s->getState()->OnEnter(s);
-
 			}
 		}
 		for (Bullet* b : Bullet::bullets)
 		{
-			Position p = b->move(maze);
-			if (p.row != -1 && p.col != -1) {
-				for (Team* t : Team::Teams)
-				{
-					for (Soldier* s : t->getSoldiers())
-					{
-						if (s->getPos().row == p.row && s->getPos().col == p.col)
-						{
-							s->setHP(s->getHP() - 10);
-							printf("Soldier hit by bullet, current hp: %d\n", s->getHP());
-						}
-					}
+			b->move(maze);
+			//if (b && !b->getIsMoving())
+			//{
+			//	Bullet::bullets.erase(find(Bullet::bullets.begin(), Bullet::bullets.end(), b));
+			//}
+		}
+		Bullet::bullets.erase(
+			remove_if(Bullet::bullets.begin(), Bullet::bullets.end(), [](Bullet* b) {
+				if (!b->getIsMoving()) {
+					delete b;
+					return true;
 				}
-				b->setIsMoving(true);
-			}
-		}
-		for (Bullet* b : Bullet::bullets)
-		{
-			if (!b && !b->getIsMoving())
-			{
-				Bullet::bullets.erase(find(Bullet::bullets.begin(), Bullet::bullets.end(), b));
-			}
-		}
+				return false;
+			}),
+			Bullet::bullets.end()
+		);
 	}
 
 	glutPostRedisplay(); // indirect call to display

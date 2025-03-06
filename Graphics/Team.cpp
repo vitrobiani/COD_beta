@@ -1,11 +1,11 @@
 #include "Team.h"
+#include "Fighter.h"
 
 vector<Team*> Team::Teams;
-Team::Team(int color[3])
+queue<Soldier*> Team::callingSquires;
+Team::Team(vector<array<double, 3>> tc)
 {
-	teamColor[0] = color[0];
-	teamColor[1] = color[1];
-	teamColor[2] = color[2];
+	teamColor = tc;
 	teamID = generateTeamID();
 	teamSize = 0;
 }
@@ -23,10 +23,12 @@ TeamID Team::generateTeamIDForSoldier()
 	return tid;
 }
 
-void Team::addSoldier(Position start_pos)
+void Team::addSoldier(Position start_pos, bool isFighter)
 {
-	Fighter* s = new Fighter(start_pos, generateTeamIDForSoldier());
-	soldiers.push_back(s);
+	if (isFighter) 
+		soldiers.push_back(new Fighter(start_pos, generateTeamIDForSoldier()));
+	else 
+		soldiers.push_back(new Squire(start_pos, generateTeamIDForSoldier()));
 }
 
 Position Team::findNearestEnemy(Soldier* s)
@@ -37,15 +39,49 @@ Position Team::findNearestEnemy(Soldier* s)
 	{
 		if (t->getTeamID().team == s->getID().team)
 			continue;
-		for (Soldier* s : t->getSoldiers()) {
-			double check = calculateDistance(s->getPos(), s->getPos());
+		for (Soldier* sol : t->getSoldiers()) {
+			double check = calculateDistance(sol->getPos(), s->getPos());
 			if (check < distance) {
-				nearest = s->getPos();
+				nearest = sol->getPos();
 				distance = check;
 			}
 		}
 	}
 	return nearest;
+}
+
+Position Team::findNearestTeammate(Soldier* s)
+{
+	double distance = INFINITY;
+	Position nearest = {};
+	for (Soldier* sol : Teams.at(s->getID().team)->getSoldiers()) {
+		if (sol->getID().place == s->getID().place)
+			continue;
+		double check = calculateDistance(sol->getPos(), s->getPos());
+		if (check < distance) {
+			nearest = sol->getPos();
+			distance = check;
+		}
+	}
+	return nearest;
+}
+
+Soldier* Team::findNearestTeammatePtr(Soldier* s)
+{
+	double distance = INFINITY;
+	int index = 0;
+	int nearest = 0;
+	for (Soldier* sol : Teams.at(s->getID().team)->getSoldiers()) {
+		if (sol->getID().place == s->getID().place)
+			continue;
+		double check = calculateDistance(sol->getPos(), s->getPos());
+		if (check < distance) {
+			nearest = index;
+			distance = check;
+		}
+		index++;
+	}
+	return Teams.at(s->getID().team)->getSoldiers().at(nearest);
 }
 
 double Team::calculateDistance(Position p1, Position p2)
@@ -73,48 +109,56 @@ vector<Position> Team::getEnemiesPositions() {
 	return positions;
 }
 
-Team Team::getTeamByID(TeamID id) {
+Team* Team::getTeamByID(TeamID id) {
 	for (Team* t : Teams) {
 		if (t->getTeamID().team == id.team)
-			return *t;
+			return t;
 	}
 }
 
-Cell* Team::runBFS(int maze[MSZ][MSZ], Soldier* s, double* sec_map) {
-    int dupMaze[MSZ][MSZ] = {0};
-    int dupMaze2[MSZ][MSZ] = {0};
+Position Team::findSafestPosition(int maze[MSZ][MSZ], Soldier* s, double* sec_map)
+{
+	Cell* c = findBestHeuristicCell(maze, s, sec_map);
+	c = RestorePath(c);
+	return Position{ c->getRow(), c->getCol() };
+}
+
+Cell* Team::findBestHeuristicCell(int maze[MSZ][MSZ], Soldier* s, double* sec_map) {
+    int (*dupMaze)[MSZ] = new int[MSZ][MSZ];
+    //int (*dupMaze2)[MSZ] = new int[MSZ][MSZ];
     cloneMaze(maze, dupMaze);
-    cloneMaze(maze, dupMaze2);
-	vector<Position> targets = Team::getTeamByID(s->getID()).getEnemiesPositions();
+    //cloneMaze(maze, dupMaze2);
+    vector<Position> targets = Team::getTeamByID(s->getID())->getEnemiesPositions();
 
     queue<Cell*> grays;
     grays.push(new Cell(s->getPos().row, s->getPos().col, nullptr));
     Cell* to_go_to = nullptr;
-	vector<double> heuristics;
-	vector<Cell*> cells;
-	int j = 0;
-	while (j < BFS_DEPTH) {
-		to_go_to = BFSIteration(grays, dupMaze);
-		double h = 0;
-		// heuristic calculation takes into account the distance from the soldier to the enemies and the security map
-		for (Position p : targets) { 
-			h += Team::calculateDistance(Position{to_go_to->getRow(), to_go_to->getCol()}, p); // higher = more distant = better
-			double security = sec_map[MSZ * p.row + p.col]; // higher = less secure = worse
-			h -= security * SECURITY_COEFFICIENT*100;
-		}
-		heuristics.push_back(h);
-		cells.push_back(to_go_to);
-		j++;
-	}
-	double max = heuristics.at(heuristics.size()-1);
-	to_go_to = cells.at(heuristics.size()-1);
-	for (int i = heuristics.size()-1; i > 0; i--) {
-		if (heuristics.at(i) > max) {
-			max = heuristics.at(i);
-			to_go_to = cells.at(i);
-		}
-	}
-	return RestorePath(to_go_to);
+    vector<double> heuristics;
+    vector<Cell*> cells;
+    int j = 0;
+    while (j < BFS_DEPTH) {
+        to_go_to = BFSIteration(grays, dupMaze);
+        double h = 0;
+        // heuristic calculation takes into account the distance from the soldier to the enemies and the security map
+        for (Position p : targets) { 
+            h += Team::calculateDistance(Position{to_go_to->getRow(), to_go_to->getCol()}, p); // higher = more distant = better
+            double security = sec_map[MSZ * p.row + p.col]; // higher = less secure = worse
+            h -= security * SECURITY_COEFFICIENT*100;
+        }
+        heuristics.push_back(h);
+        cells.push_back(to_go_to);
+        j++;
+    }
+    double max = heuristics.at(heuristics.size()-1);
+    to_go_to = cells.at(heuristics.size()-1);
+    for (int i = heuristics.size()-1; i > 0; i--) {
+        if (heuristics.at(i) > max) {
+            max = heuristics.at(i);
+            to_go_to = cells.at(i);
+        }
+    }
+    delete[] dupMaze;
+    //delete[] dupMaze2;
     return to_go_to;
 }
 

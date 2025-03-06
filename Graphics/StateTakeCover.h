@@ -1,15 +1,15 @@
 #pragma once
 #include "State.h"
-#include "Fighter.h"
-#include "StateSearchEnemy.h"
+#include "Squire.h"
 #include "Team.h"
+#include "StateProvideHelp.h"
 
-class StateCallSquire : public State
+class StateTakeCover: public State
 {
 public:
-	string toString() { return "Call Squire"; }
+	string toString() { return "StateTakeCover"; }
 	void OnEnter(Soldier* p);
 	void Transition(Soldier* p);
 	void OnExit(Soldier* p);
-};
 
+};

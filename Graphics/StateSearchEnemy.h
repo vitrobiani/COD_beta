@@ -8,6 +8,7 @@
 class StateSearchEnemy : public State
 {
 public:
+	string toString() { return "StateSearchEnemy"; }
 	void OnEnter(Soldier* p);
 	void Transition(Soldier* p);
 	void OnExit(Soldier* p);

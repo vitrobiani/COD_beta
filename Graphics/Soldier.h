@@ -3,7 +3,6 @@
 #include "State.h"
 #include "CompareCells.h"
 #include "Cell.h"
-#include "Grenade.h"
 
 class State;
 
@@ -11,7 +10,7 @@ class State;
 class Soldier
 {
 protected:
-	int hp;
+	int hp, hp_th;
 	bool isMoving;
 	Position pos;
 	TeamID id;
@@ -26,14 +25,13 @@ public:
 	void setIsMoving(bool b) { isMoving = b; };
 	int getHP() { return hp; };
 	void setHP(int h) { hp = h; };
+	int getHP_TH() { return hp_th; };
 	Position getPos() { return pos; };
 	void setPos(Position p) { pos = p; };
 	State* getState() { return state; };
 	void setState(State* s) { state = s; };
 	TeamID getID() { return id; };
-	void moveToEnemy(Position enemy_pos);
 	void move(Position p);
-	bool checkHitByBullet();
 
     virtual const char* getType() = 0;
     virtual int getAmmo() = 0;
@@ -44,7 +42,7 @@ public:
 	Cell* CheckNeighbor(int row, int col, Cell* pCurrent, Position target, int maze[MSZ][MSZ], priority_queue<Cell*, vector<Cell*>, CompareCells>& grays);
 	Cell* RestorePath(Cell * pc);
 
-	bool isEnemyInSight(Position enemy_pos);
+	void hitByBullet();
 	//Cell* runBFS(int maze[MSZ][MSZ], int curRow, int curCol);
 	//Cell* BFSIteration(queue<Cell*>& grays, int maze[MSZ][MSZ], vector<int> targets, bool forH);
 };
