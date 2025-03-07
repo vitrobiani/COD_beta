@@ -66,19 +66,16 @@ bool Fighter::isEnemyInSight(Position enemy_pos)
 
 void Fighter::moveToEnemy(Position enemy_pos)
 {
+	bool isEnemyInSightBool = false;
 	if (isMoving)
 	{
-		/*int** clonedMaze = (int**)malloc(sizeof(int) * MSZ * MSZ);
-		if (clonedMaze == nullptr)
-			return;*/
-		int clonedMaze[MSZ][MSZ] = { 0 };
-		cloneMaze(maze, clonedMaze);
-		Cell* c = runAS(clonedMaze, security_maps.at(getID().team), enemy_pos);
-		//free(clonedMaze);
+		cloneMaze(maze, dupMaze);
+		Cell* c = runAS(dupMaze, security_maps.at(getID().team), enemy_pos);
 		move(Position{ c->getRow(), c->getCol() });
-		if (isEnemyInSight(enemy_pos))
-			state->Transition(this); // Transition to attack state
+		isEnemyInSightBool = isEnemyInSight(enemy_pos);
 	}
+	if (isEnemyInSightBool)
+		state->Transition(this);
 }
 
 void Fighter::addToSquireQueue() 

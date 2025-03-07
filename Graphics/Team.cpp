@@ -97,16 +97,15 @@ vector<Position> Team::getSoldiersPositions() {
 	return positions;
 }
 
-vector<Position> Team::getEnemiesPositions() {
-	vector<Position> positions;
+void Team::getEnemiesPositions(vector<Position> positions) {
 	for (Team* t : Teams) {
 		if (t->getTeamID().team == teamID.team)
 			continue;
-		for (Soldier* s : t->getSoldiers()) {
+		vector<Soldier*> mey = t->getSoldiers();
+		for (Soldier* s : mey) {
 			positions.push_back(s->getPos());
 		}
 	}
-	return positions;
 }
 
 Team* Team::getTeamByID(TeamID id) {
@@ -124,11 +123,9 @@ Position Team::findSafestPosition(int maze[MSZ][MSZ], Soldier* s, double* sec_ma
 }
 
 Cell* Team::findBestHeuristicCell(int maze[MSZ][MSZ], Soldier* s, double* sec_map) {
-    int (*dupMaze)[MSZ] = new int[MSZ][MSZ];
-    //int (*dupMaze2)[MSZ] = new int[MSZ][MSZ];
     cloneMaze(maze, dupMaze);
-    //cloneMaze(maze, dupMaze2);
-    vector<Position> targets = Team::getTeamByID(s->getID())->getEnemiesPositions();
+	vector<Position> targets;
+	Team::getTeamByID(s->getID())->getEnemiesPositions(targets);
 
     queue<Cell*> grays;
     grays.push(new Cell(s->getPos().row, s->getPos().col, nullptr));
@@ -157,7 +154,7 @@ Cell* Team::findBestHeuristicCell(int maze[MSZ][MSZ], Soldier* s, double* sec_ma
             to_go_to = cells.at(i);
         }
     }
-    delete[] dupMaze;
+    //delete[] dupMaze;
     //delete[] dupMaze2;
     return to_go_to;
 }

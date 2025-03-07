@@ -62,6 +62,7 @@ const int RESTOCK = 2;
 const int HELPED_SOLDIER = 3;
 
 extern int maze[MSZ][MSZ];
+extern int dupMaze[MSZ][MSZ];
 extern double security_map[MSZ][MSZ];
 extern vector<double*> security_maps;
 

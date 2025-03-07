@@ -35,6 +35,7 @@ Bullet* pb = nullptr;
 Grenade* pg = nullptr;
 
 int maze[MSZ][MSZ] = {0}; // WALLs
+int dupMaze[MSZ][MSZ] = { 0 };
 double security_map[MSZ][MSZ] = {0};	// mey mey
 vector<double*> security_maps;
 vector<Position> HP_Stashes;

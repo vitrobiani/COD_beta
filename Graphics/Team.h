@@ -28,7 +28,7 @@ public:
 	static Position findNearestTeammate(Soldier* s);
 	static Soldier* findNearestTeammatePtr(Soldier* s);
 	static double calculateDistance(Position p1, Position p2);
-	vector<Position> getEnemiesPositions();
+	void getEnemiesPositions(vector<Position> positions);
 	vector<Position> getSoldiersPositions();
 	static Team* getTeamByID(TeamID id);
 	void addSoldier(Position start_pos, bool isFighter);
