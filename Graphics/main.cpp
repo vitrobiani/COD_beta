@@ -14,6 +14,7 @@
 #include "Soldier.h"
 #include "Fighter.h"
 #include "Team.h"
+#include "Windows.h"
 
 using namespace std;
 
@@ -487,7 +488,7 @@ void init()
 	glClearColor(0.5, 0.5, 0.5, 0);// color of window background
 	glOrtho(0, MSZ, 0, MSZ, -1, 1); // set the coordinates system
 
-	srand(time(0));
+	//srand(time(0));
 
 	SetupDungeon();
 	
@@ -594,33 +595,56 @@ void keyboard(unsigned char key, int x, int y) {
 		exit(0);
 }
 
+LONG WINAPI MyExceptionFilter(EXCEPTION_POINTERS* pExceptionInfo) {
+	// Retrieve the exception address
+	void* exceptionAddress = pExceptionInfo->ExceptionRecord->ExceptionAddress;
+	std::cerr << "Exception occurred at address: " << exceptionAddress << std::endl;
+	if (pExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_ACCESS_VIOLATION) {
+		cout << "seg fault" << endl;
+	}
+	else {
+		cout << pExceptionInfo->ExceptionRecord->ExceptionCode;
+	}
+	// Additional handling can be done here
+	return EXCEPTION_EXECUTE_HANDLER;
+}
 
 
 void main(int argc, char* argv[]) 
 {
-	glutInit(&argc, argv);
-	// definitions for visual memory (Frame buffer) and double buffer
-	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
-	glutInitWindowSize(WIDTH, HEIGHT);
-	glutInitWindowPosition(350, 70);
-	glutCreateWindow("BFS");
+	__try
+	{
+		glutInit(&argc, argv);
+		// definitions for visual memory (Frame buffer) and double buffer
+		glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+		glutInitWindowSize(WIDTH, HEIGHT);
+		glutInitWindowPosition(350, 70);
+		glutCreateWindow("BFS");
 
-	// display is a refresh function
-	glutDisplayFunc(display);
-	// idle is a update function
-	glutIdleFunc(idle);
+		// display is a refresh function
+		glutDisplayFunc(display);
+		// idle is a update function
+		glutIdleFunc(idle);
 
-	glutMouseFunc(mouse);
-	glutKeyboardFunc(keyboard);
+		glutMouseFunc(mouse);
+		glutKeyboardFunc(keyboard);
 
-	// menu
-	glutCreateMenu(menu);
-	glutAddMenuEntry("Fire Bullet", 1);
-	glutAddMenuEntry("Throw Grenade", 2);
-	glutAddMenuEntry("Generate Security Map", 3);
-	glutAttachMenu(GLUT_RIGHT_BUTTON);
+		// menu
+		glutCreateMenu(menu);
+		glutAddMenuEntry("Fire Bullet", 1);
+		glutAddMenuEntry("Throw Grenade", 2);
+		glutAddMenuEntry("Generate Security Map", 3);
+		glutAttachMenu(GLUT_RIGHT_BUTTON);
 
-	init();
+		init();
 
-	glutMainLoop();
+		glutMainLoop();
+	}
+	__except (MyExceptionFilter(GetExceptionInformation()))
+	{
+		std::cerr << "Access violation caught!" << std::endl;
+		//std::cout << e.what() << endl;
+	}
+
+
 }

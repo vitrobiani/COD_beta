@@ -3,7 +3,7 @@
 void StateCallSquire::OnEnter(Soldier* p)
 {
 	Fighter* f = (Fighter*)(p);
-	f->move(Team::findSafestPosition(maze, p, security_maps.at(p->getID().team)));
+	f->move(Team::findSafestPosition(maze, f, security_maps.at(p->getID().team)));
 	f->addToSquireQueue();
 	f->checkIfFitForFight();
 }

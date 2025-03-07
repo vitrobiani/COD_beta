@@ -19,7 +19,7 @@ public:
 	TeamID generateTeamID();
 	TeamID generateTeamIDForSoldier();
 	TeamID getTeamID() { return teamID; };
-	vector<Soldier*> getSoldiers() { return soldiers; };
+	vector<Soldier*>& getSoldiers() { return soldiers; };
 	void setSoldiers(vector<Soldier*> s) { soldiers = s; };
 	array<double, 3> getFighterColor() { return teamColor.at(0); };
 	array<double, 3> getSquireColor() { return teamColor.at(1); };
@@ -28,7 +28,7 @@ public:
 	static Position findNearestTeammate(Soldier* s);
 	static Soldier* findNearestTeammatePtr(Soldier* s);
 	static double calculateDistance(Position p1, Position p2);
-	void getEnemiesPositions(vector<Position> positions);
+	void getEnemiesPositions(vector<Position>& positions);
 	vector<Position> getSoldiersPositions();
 	static Team* getTeamByID(TeamID id);
 	void addSoldier(Position start_pos, bool isFighter);

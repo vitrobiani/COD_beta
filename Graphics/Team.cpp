@@ -97,11 +97,11 @@ vector<Position> Team::getSoldiersPositions() {
 	return positions;
 }
 
-void Team::getEnemiesPositions(vector<Position> positions) {
+void Team::getEnemiesPositions(vector<Position>& positions) {
 	for (Team* t : Teams) {
 		if (t->getTeamID().team == teamID.team)
 			continue;
-		vector<Soldier*> mey = t->getSoldiers();
+		vector<Soldier*>& mey = t->getSoldiers();
 		for (Soldier* s : mey) {
 			positions.push_back(s->getPos());
 		}
@@ -125,6 +125,7 @@ Position Team::findSafestPosition(int maze[MSZ][MSZ], Soldier* s, double* sec_ma
 Cell* Team::findBestHeuristicCell(int maze[MSZ][MSZ], Soldier* s, double* sec_map) {
     cloneMaze(maze, dupMaze);
 	vector<Position> targets;
+	targets.reserve(4);
 	Team::getTeamByID(s->getID())->getEnemiesPositions(targets);
 
     queue<Cell*> grays;

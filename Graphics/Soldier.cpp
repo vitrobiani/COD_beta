@@ -79,9 +79,18 @@ Cell* Soldier::CheckNeighbor(int row, int col, Cell* pCurrent, Position target, 
 }
 
 Cell* Soldier::RestorePath(Cell* pc) {
-    while (pc->getParent() && pc->getParent()->getParent() != nullptr) {
-        pc = pc->getParent();
-    }
+    //if (!strcmp(this->getType(), "Squire"))
+    //{
+    //    while (pc->getParent() && pc->getParent()->getParent()->getParent() != nullptr) {
+    //        pc = pc->getParent();
+    //    }
+    //}
+    //else {
+        while (pc->getParent() && pc->getParent()->getParent() != nullptr) {
+            pc = pc->getParent();
+        }
+    //}
+
     return pc; // Return the next step
 }
 

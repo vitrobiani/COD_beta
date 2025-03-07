@@ -6,7 +6,9 @@ void StateProvideHelp::OnEnter(Soldier* p)
 {
 	Squire* s = (Squire*)(p);
 	Fighter* f = (Fighter*)(Team::Teams.at(s->getID().team)->callingSquires.front());
+	cout << "before " << hex << s << "   " << f << endl;
 	int code = s->HelpSoldier(f);
+	cout << "after " << hex << s << "   " << f << endl;
 	switch (code)
 	{
 	case TOO_FAR_TO_HELP:

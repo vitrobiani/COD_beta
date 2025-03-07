@@ -17,9 +17,8 @@ void Squire::moveToTeammate(Position teammate_pos)
 {
 	if (isMoving)
 	{
-		int clonedMaze[MSZ][MSZ] = { 0 };
-		cloneMaze(maze, clonedMaze);
-		Cell* c = runAS(clonedMaze, security_maps.at(getID().team), teammate_pos);
+		cloneMaze(maze, dupMaze);
+		Cell* c = runAS(dupMaze, security_maps.at(getID().team), teammate_pos);
 		move(Position{ c->getRow(), c->getCol() });
 	}
 }
