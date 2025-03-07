@@ -37,6 +37,7 @@ void StateProvideHelp::Transition(Soldier* p)
 	else
 		p->setState(new StateTakeCover());
 	delete oldState;
+	oldState = nullptr;
 	p->getState()->OnEnter(p);
 }
 

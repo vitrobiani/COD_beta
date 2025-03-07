@@ -11,6 +11,12 @@ Fighter::Fighter(Position start_pos, TeamID tid) : Soldier(start_pos, tid)
 	isCallingSquire = false;
 }
 
+Fighter::~Fighter()
+{
+	delete state;
+	state = nullptr;
+}
+
 void Fighter::loadBullet(Position enemy_pos)
 {
 	if (ammo > 0)
@@ -52,16 +58,24 @@ void Fighter::engageEnemy(Position enemy_pos)
 
 bool Fighter::isEnemyInSight(Position enemy_pos) 
 {
+	bool retVal = false;
 	for (int i = 0; i < IS_ENEMY_IN_SIGHT; i++)
 	{
 		Grenade* g = new Grenade(getPos().row, getPos().col);
 
-		if(g->findEnemyByExplosion(maze, enemy_pos))
-			return true;
-        else
-			continue;
+		if (g->findEnemyByExplosion(maze, enemy_pos))
+		{
+			retVal = true;
+		}
+
+		delete g;
+
+		if (retVal)
+		{
+			break;
+		}
 	}
-	return false;
+	return retVal;
 }
 
 void Fighter::moveToEnemy(Position enemy_pos)

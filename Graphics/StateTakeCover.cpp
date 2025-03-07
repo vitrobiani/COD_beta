@@ -6,7 +6,6 @@ void StateTakeCover::OnEnter(Soldier* p)
 	Soldier* teammate = Team::findNearestTeammatePtr(s);
 	s->setIsMoving(true);
 	
-	int dupMaze[MSZ][MSZ] = { 0 };
 	cloneMaze(maze, dupMaze);
 	Cell* c = Team::findBestHeuristicCell(dupMaze, teammate, security_maps.at(p->getID().team));
 	Position p1 = Position{ c->getRow(), c->getCol() };
@@ -23,6 +22,7 @@ void StateTakeCover::Transition(Soldier* p)
 	State* oldState = p->getState();
 	p->setState(new StateProvideHelp());
 	delete oldState;
+	oldState = nullptr;
 	p->getState()->OnEnter(p);
 }
 

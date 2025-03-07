@@ -18,16 +18,7 @@
 
 using namespace std;
 
-const int WIDTH = 700;
-const int HEIGHT = 700;
-
-const int NUM_ROOMS = 14;
-const int NUM_OBSTACLES = 700;
-
-const double WALL_COST = 5;
-const double SPACE_COST = 1;
-
-Room* rooms[NUM_ROOMS];
+Room* rooms[NUM_ROOMS] = { 0 };
 vector<Room*> rooms_for_summoning;
 
 bool bulletFired = false;
@@ -317,22 +308,6 @@ void renderBitmapString(float x, float y, void* font, const string& str) {
     }
 }
 
-void drawSoldierNumber(int number, int x, int y) {
-    glColor3d(0, 0, 0); // White text for contrast
-
-    //glDisable(GL_DEPTH_TEST); // Disable depth test only for text
-
-    glRasterPos2f(x + 0.4, y + 0.4); // Center inside the soldier
-
-    string numStr = to_string(number);
-    for (char c : numStr) {
-        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, c);
-    }
-	//glEnable(GL_DEPTH_TEST);
-
-    //glColor3d(0.3, 0.3, 0.3); // White text for contrast
-}
-
 void ShowDungeon()
 {
 	int i, j;
@@ -417,7 +392,10 @@ void GenerateSecurityMapForSpsificTeam(int TeamNum)
 {
 	for (Team* t : Team::Teams) 
 	{
-		if (t->getTeamID().team == TeamNum) continue;
+		if (t->getTeamID().team == TeamNum)
+		{
+			continue;
+		}
 		for (Soldier* s : t->getSoldiers())
 		{
 			Grenade* g = new Grenade(s->getPos().row, s->getPos().col);
@@ -426,6 +404,9 @@ void GenerateSecurityMapForSpsificTeam(int TeamNum)
 			cloneSecurityMap(security_map, clonedMap);
 			g->simulateExplosion(maze, clonedMap);
 			cloneSecurityMapToPtr(clonedMap, security_maps.at(s->getID().team));
+
+			delete g;
+			g = nullptr;
 		}
 	}
 }
@@ -497,9 +478,9 @@ void init()
 }
 
 void cloneAllSecMaps() {
-	for (int i = 0; i < security_maps.size(); i++) {
-		for (int j = 0; j < MSZ; j++) {
-			for (int k = 0; k < MSZ; k++) {
+	for (size_t i = 0; i < security_maps.size(); i++) {
+		for (size_t j = 0; j < MSZ; j++) {
+			for (size_t k = 0; k < MSZ; k++) {
 				security_maps.at(i)[MSZ * j + k] = security_map[j][k];
 			}
 		}
@@ -521,12 +502,13 @@ void idle()
 	if (!paused)
 	{
 		cloneAllSecMaps();
-		for (int i = 0; i < security_maps.size(); i++)
+		for (size_t i = 0; i < security_maps.size(); i++)
 			GenerateSecurityMapForSpsificTeam(i);
 
 		for (Team* t : Team::Teams)
 		{
-			for (Soldier* s : t->getSoldiers())
+			vector<Soldier*>& mey = t->getSoldiers();
+			for (Soldier* s : mey)
 			{
 				s->getState()->OnEnter(s);
 			}
@@ -543,6 +525,7 @@ void idle()
 			remove_if(Bullet::bullets.begin(), Bullet::bullets.end(), [](Bullet* b) {
 				if (!b->getIsMoving()) {
 					delete b;
+					b = nullptr;
 					return true;
 				}
 				return false;
@@ -595,22 +578,12 @@ void keyboard(unsigned char key, int x, int y) {
 		exit(0);
 }
 
-LONG WINAPI MyExceptionFilter(EXCEPTION_POINTERS* pExceptionInfo) {
-	// Retrieve the exception address
-	void* exceptionAddress = pExceptionInfo->ExceptionRecord->ExceptionAddress;
-	std::cerr << "Exception occurred at address: " << exceptionAddress << std::endl;
-	if (pExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_ACCESS_VIOLATION) {
-		cout << "seg fault" << endl;
-	}
-	else {
-		cout << pExceptionInfo->ExceptionRecord->ExceptionCode;
-	}
-	// Additional handling can be done here
-	return EXCEPTION_EXECUTE_HANDLER;
+LONG MyFilter(LONG excode) {
+	return (excode == EXCEPTION_ACCESS_VIOLATION) ?
+		EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH;
 }
 
-
-void main(int argc, char* argv[]) 
+int main(int argc, char* argv[]) 
 {
 	__try
 	{
@@ -640,11 +613,10 @@ void main(int argc, char* argv[])
 
 		glutMainLoop();
 	}
-	__except (MyExceptionFilter(GetExceptionInformation()))
-	{
+	__except(MyFilter(GetExceptionCode())) {
 		std::cerr << "Access violation caught!" << std::endl;
-		//std::cout << e.what() << endl;
+		// Handle the exception (e.g., clean up resources)
 	}
 
-
+	return 0;
 }

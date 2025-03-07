@@ -13,6 +13,12 @@ Squire::Squire(Position start_pos, TeamID tid) : Soldier(start_pos, tid)
 	prioritize_ammo = false;
 }
 
+Squire::~Squire()
+{
+	delete state;
+	state = nullptr;
+}
+
 void Squire::moveToTeammate(Position teammate_pos)
 {
 	if (isMoving)
@@ -89,14 +95,13 @@ void Squire::Restock()
 		getState()->Transition(this);
 }
 
-bool Squire::goToStash(vector<Position> stash)
+bool Squire::goToStash(const vector<Position>& stash)
 {
 	Position p = this->findNearestStash(stash);
 	if (Team::calculateDistance(getPos(), p) > SQUIRE_DISTANCE_FROM_TEAMMATE)
 	{
-		int clonedMaze[MSZ][MSZ] = { 0 };
-		cloneMaze(maze, clonedMaze);
-		Cell* c = this->runAS(clonedMaze, security_maps.at(getID().team), p);
+		cloneMaze(maze, dupMaze);
+		Cell* c = this->runAS(dupMaze, security_maps.at(getID().team), p);
 		move(Position{ c->getRow(), c->getCol() });
 		return false;
 	}
@@ -106,7 +111,7 @@ bool Squire::goToStash(vector<Position> stash)
 	}
 }
 
-Position Squire::findNearestStash(vector<Position> stash)
+Position Squire::findNearestStash(const vector<Position>& stash)
 {
 	double distance = INFINITY;
 	int nearest = 0;

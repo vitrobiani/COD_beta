@@ -31,6 +31,16 @@ Cell* Soldier::runAS(int maze[MSZ][MSZ], double* security_map, Position target) 
 	while (!to_go_to) {
 		to_go_to = ASIteration(grays, maze, target);
 	}
+    /*for (size_t i = 0; i < grays.size(); ++i)
+    {
+        Cell* cellToPop = grays.top();
+        if (cellToPop == to_go_to || cellToPop == to_go_to->getParent())
+        {
+            continue;
+        }
+        delete cellToPop;
+        cellToPop = nullptr;
+    }*/
     return to_go_to;
 }
 

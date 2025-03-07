@@ -10,6 +10,7 @@ private:
 	bool prioritize_ammo;
 public:
 	Squire(Position start_pos, TeamID tid);
+    ~Squire();
     int getHealthPack() const { return health_pack; }
     const char* getType() override { return "Squire"; }
     int getAmmo() override { return ammo; }
@@ -18,7 +19,7 @@ public:
     void doesAnybodyNeedHelp();
     int HelpSoldier(Soldier* s);
     void Restock();
-    Position findNearestStash(vector<Position> stash);
-    bool goToStash(vector<Position> stash);
+    Position findNearestStash(const vector<Position>& stash);
+    bool goToStash(const vector<Position>& stash);
 };
 

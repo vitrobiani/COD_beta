@@ -9,10 +9,19 @@
 
 using namespace std;
 
-const int MSZ = 100; 
+constexpr int MSZ = 100;
 
-const int TEAM_NUM = 2;
-const int TEAM_SIZE = 3;
+constexpr int TEAM_NUM = 2;
+constexpr int TEAM_SIZE = 3;
+
+constexpr int WIDTH = 700;
+constexpr int HEIGHT = 700;
+
+constexpr int NUM_ROOMS = 14;
+constexpr int NUM_OBSTACLES = 700;
+
+constexpr double WALL_COST = 5;
+constexpr double SPACE_COST = 1;
 
 const unordered_map<string, array<double, 3>> team_colors = {
     {"FPurple", {217 / (double)255, 1 / (double)255, 122 / (double)255}},
@@ -21,45 +30,45 @@ const unordered_map<string, array<double, 3>> team_colors = {
     {"SOrange", {255 / (double)255, 153 / (double)255, 19 / (double)255}}
 };
 
-const int HP_STASH = 6;
-const int AMMO_STASH = 5;
-const int BLACK = 4;
-const int GRAY = 3;
-const int SOLDIER = 2;
-const int SPACE = 1;
-const int WALL = 0;
-const double PI = 3.1415;
+constexpr int HP_STASH = 6;
+constexpr int AMMO_STASH = 5;
+constexpr int BLACK = 4;
+constexpr int GRAY = 3;
+constexpr int SOLDIER = 2;
+constexpr int SPACE = 1;
+constexpr int WALL = 0;
+constexpr double PI = 3.1415;
 
-const int AMMO_STASH_AMOUNT = 2;
-const int HEALTH_PACK_STASH_AMOUNT = 2;
+constexpr int AMMO_STASH_AMOUNT = 2;
+constexpr int HEALTH_PACK_STASH_AMOUNT = 2;
 
-const double SECURITY_FACTOR = 0.001;
-const double SECURITY_COEFFICIENT = 15;
-const int GRENADE_SEC_MAP_PER_TEAM = 30;
-const int IS_ENEMY_IN_SIGHT = 4;
-const double BULLET_SPEED = 0.3;
-const int BULLET_DAMAGE = 1;
-const int SQUIRE_DISTANCE_FROM_TEAMMATE = 5;
+constexpr double SECURITY_FACTOR = 0.001;
+constexpr double SECURITY_COEFFICIENT = 15;
+constexpr int GRENADE_SEC_MAP_PER_TEAM = 30;
+constexpr int IS_ENEMY_IN_SIGHT = 4;
+constexpr double BULLET_SPEED = 0.3;
+constexpr int BULLET_DAMAGE = 1;
+constexpr int SQUIRE_DISTANCE_FROM_TEAMMATE = 5;
 
-const int GRENADE_SEC_MAP_AMOUNT = 1000;
-const int SEC_MAP_ITERATIONS = 20;
+constexpr int GRENADE_SEC_MAP_AMOUNT = 1000;
+constexpr int SEC_MAP_ITERATIONS = 20;
 
-const int START_HP = 100;
+constexpr int START_HP = 100;
 
-const int MAX_GRENADE_CAPACITY_SQUIRE = 20;
-const int MAX_BULLET_CAPACITY_SQUIRE = 200;
-const int MAX_BULLET_CAPACITY_FIGHTER = 10;
-const int MAX_GRENADE_CAPACITY_FIGHTER = 5;
-const int RELOAD_TIME_FIGHTER = 15;
+constexpr int MAX_GRENADE_CAPACITY_SQUIRE = 20;
+constexpr int MAX_BULLET_CAPACITY_SQUIRE = 200;
+constexpr int MAX_BULLET_CAPACITY_FIGHTER = 10;
+constexpr int MAX_GRENADE_CAPACITY_FIGHTER = 5;
+constexpr int RELOAD_TIME_FIGHTER = 15;
 
-const int BFS_DEPTH = 400;
+constexpr int BFS_DEPTH = 400;
 
-const int MAX_HEALTH_PACK_CAPACITY_SQUIRE = 20;
+constexpr int MAX_HEALTH_PACK_CAPACITY_SQUIRE = 20;
 
 // Squire code definitions
-const int TOO_FAR_TO_HELP = 1;
-const int RESTOCK = 2;
-const int HELPED_SOLDIER = 3;
+constexpr int TOO_FAR_TO_HELP = 1;
+constexpr int RESTOCK = 2;
+constexpr int HELPED_SOLDIER = 3;
 
 extern int maze[MSZ][MSZ];
 extern int dupMaze[MSZ][MSZ];

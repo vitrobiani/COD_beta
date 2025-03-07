@@ -89,13 +89,13 @@ double Team::calculateDistance(Position p1, Position p2)
 	return sqrt(pow(p1.row - p2.row, 2) + pow(p1.col - p2.col, 2));
 }
 
-vector<Position> Team::getSoldiersPositions() {
-	vector<Position> positions;
-	for (Soldier* s : soldiers) {
-		positions.push_back(s->getPos());
-	}
-	return positions;
-}
+//vector<Position> Team::getSoldiersPositions() {
+//	vector<Position> positions;
+//	for (Soldier* s : soldiers) {
+//		positions.push_back(s->getPos());
+//	}
+//	return positions;
+//}
 
 void Team::getEnemiesPositions(vector<Position>& positions) {
 	for (Team* t : Teams) {
@@ -113,6 +113,7 @@ Team* Team::getTeamByID(TeamID id) {
 		if (t->getTeamID().team == id.team)
 			return t;
 	}
+	return nullptr;
 }
 
 Position Team::findSafestPosition(int maze[MSZ][MSZ], Soldier* s, double* sec_map)
@@ -149,14 +150,24 @@ Cell* Team::findBestHeuristicCell(int maze[MSZ][MSZ], Soldier* s, double* sec_ma
     }
     double max = heuristics.at(heuristics.size()-1);
     to_go_to = cells.at(heuristics.size()-1);
-    for (int i = heuristics.size()-1; i > 0; i--) {
+    for (size_t i = heuristics.size()-1; i > 0; i--) {
         if (heuristics.at(i) > max) {
             max = heuristics.at(i);
             to_go_to = cells.at(i);
         }
     }
-    //delete[] dupMaze;
-    //delete[] dupMaze2;
+
+	/*for (size_t i = 0; i < grays.size(); ++i)
+	{
+		Cell* cellToPop = grays.front();
+		if (cellToPop == to_go_to)
+		{
+			continue;
+		}
+		delete cellToPop;
+		cellToPop = nullptr;
+	}*/
+
     return to_go_to;
 }
 

@@ -8,7 +8,7 @@ class Team
 {
 private:
 	TeamID teamID;
-	vector<Soldier*> soldiers;
+	vector<Soldier*> soldiers{};
 	vector<array<double, 3>> teamColor;
 	int teamSize;
 public:
@@ -29,7 +29,7 @@ public:
 	static Soldier* findNearestTeammatePtr(Soldier* s);
 	static double calculateDistance(Position p1, Position p2);
 	void getEnemiesPositions(vector<Position>& positions);
-	vector<Position> getSoldiersPositions();
+	//vector<Position> getSoldiersPositions();
 	static Team* getTeamByID(TeamID id);
 	void addSoldier(Position start_pos, bool isFighter);
 

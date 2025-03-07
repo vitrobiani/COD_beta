@@ -21,6 +21,7 @@ public:
 	//static void addSoldier(Soldier* s) { Teams[s->getID().team].push_back(s); };
 
 	Soldier(Position start_pos, TeamID tid);
+	virtual ~Soldier() = default;
 	bool getIsMoving() { return isMoving; };
 	void setIsMoving(bool b) { isMoving = b; };
 	int getHP() { return hp; };

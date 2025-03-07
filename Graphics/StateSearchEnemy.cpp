@@ -14,6 +14,7 @@ void StateSearchEnemy::Transition(Soldier* p)
 	State* oldState = p->getState();
 	p->setState(new StateEngageEnemy());
 	delete oldState;
+	oldState = nullptr;
 	p->getState()->OnEnter(p);
 }
 

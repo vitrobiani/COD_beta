@@ -14,6 +14,7 @@ private:
 	int reloadTime;
 public:
 	Fighter(Position start_pos, TeamID tid);
+	~Fighter();
 	void engageEnemy(Position enemy_pos);
 	void setAmmo(int a) { ammo = a; };
 	void setGrenadeCount(int g) { grenade_count = g; };
