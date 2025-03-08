@@ -455,6 +455,8 @@ void display()
 	}
 	for (Bullet* b : Bullet::bullets)
 		b->show();
+	for (Grenade* g : Grenade::grenades)
+		g->show();
 
 	glutSwapBuffers(); // show all
 }

@@ -52,11 +52,14 @@ void Grenade::explode()
 
 void Grenade::expand(int maze[MSZ][MSZ])
 {
+	bool isStillExpending = false;
 	int i;
 	for (i = 0; i < NUM_BULLETS; i++)
 	{
 		bullets[i]->move(maze);
+		isStillExpending = bullets[i].get()->getIsMoving() || isStillExpending;
 	}
+	isExpending = isStillExpending;
 }
 
 void Grenade::show()
