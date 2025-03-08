@@ -32,6 +32,7 @@ public:
 	State* getState() { return state; };
 	void setState(State* s) { state = s; };
 	TeamID getID() { return id; };
+	int getHPTh() { return hp_th; };
 	void move(Position p);
 
     virtual const char* getType() = 0;

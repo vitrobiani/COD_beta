@@ -203,12 +203,13 @@ void BuildPathBetweenRooms()
 		for (j = i + 1; j < NUM_ROOMS; j++)
 		{
 			BuildPath(i, j);	// A*
-			cout << "The path from " << i << " to " << j << " has been built\n";
+			//cout << "The path from " << i << " to " << j << " has been built\n";
 		}
 	}
 }
 
 void initAmmoAndHealthPackStashes() {
+	// choosing random room and random spots in the room to put the stashes
 	for (int i = 0; i < AMMO_STASH_AMOUNT; i++)
 	{
 		int r = rand() % rooms_for_summoning.size();
@@ -233,6 +234,7 @@ void initAmmoAndHealthPackStashes() {
 
 void initSoldierTeams()
 {
+	// init the soldiers in random rooms and random spots in the room
 	vector<array<double, 3>> colors1 = { team_colors.at("FPurple"), team_colors.at("SPurple") };
     vector<array<double, 3>> colors2 = { team_colors.at("FOrange"), team_colors.at("SOrange") };
     vector<vector<array<double, 3>>> colors = { colors1, colors2 };
@@ -255,6 +257,32 @@ void initSoldierTeams()
 			}, 
 			false);
 		Team::Teams.push_back(t);
+
+		// printing some information about the teams
+		 cout << "Team " << (t->getTeamID().team ?  "Orange" : "Purple") << "\n";
+		for (auto* s : t->getSoldiers()) {
+			if (!strcmp(s->getType(), "Fighter"))
+			{
+				Fighter* f = (Fighter*)s;
+				cout << "Fighter: \n"
+				<< "type: " << f->getType() << "\n"
+				<< "ammo: " << f->getAmmo() << " grenades: " << s->getGrenades() << "\n"
+				<< "ammo_th: " << f->getAmmoTh() << " grenade_th: " << f->getGrenadeTh() << "\n"
+				<< "hp: " << f->getHP() << " hp_th: " << f->getHPTh() << "\n"
+                << "Fighter is " << (f->getIsPassive() ? "passive" : "aggressive") << "\n";
+			}
+			else {
+				Squire* sq = (Squire*)s;
+				cout << "Squire: \n"
+				<< "type: " << sq->getType() << "\n"
+				<< "ammo: " << sq->getAmmo() << " grenades: " << s->getGrenades() << "\n"
+				<< "ammo_th: " << sq->getAmmoTh() << " grenade_th: " << sq->getGrenadeTh() << "\n"
+				<< "health_pack: " << sq->getHealthPack() << " health_pack_th: " << sq->getHealthPackTh() << "\n"
+				<< "hp: " << sq->getHP() << " hp_th: " << sq->getHPTh() << "\n"
+				<< "Squire is " << (sq->getPrioritizeAmmo() ? "prioritizing ammo" : "prioritizing health packs") << "\n";
+			}
+		}
+		cout << "\n=================================================\n";
 	}
 }
 
@@ -372,6 +400,7 @@ void ShowDungeon()
 
 void GenerateSecurityMap()
 {
+	// generating the general security map for all teams
 	for (int j = 0; j < SEC_MAP_ITERATIONS; j++)
 	{
 		int numSimulations = GRENADE_SEC_MAP_AMOUNT;
@@ -389,6 +418,7 @@ void GenerateSecurityMap()
 
 void GenerateSecurityMapForSpsificTeam(int TeamNum)
 {
+	// generating the security map for each specific team based on the general security map
 	for (Team* t : Team::Teams) 
 	{
 		if (t->getTeamID().team == TeamNum)
@@ -415,6 +445,7 @@ void GenerateSecurityMapForSpsificTeam(int TeamNum)
 
 void drawHUD()
 {
+	// a HUD for our convinenece
 	float y_offset = MSZ - 2;
     float x_offset = 1; 
 
@@ -453,6 +484,7 @@ void display()
 	{
 		pg->show();
 	}
+	// actually showing all the bullets and grenades on the screen
 	for (Bullet* b : Bullet::bullets)
 		b->show();
 	for (Grenade* g : Grenade::grenades)
@@ -462,6 +494,7 @@ void display()
 }
 
 void initSecurityMaps() {
+	// initilize the security maps for all teams
 	for (int i = 0; i < TEAM_NUM; i++) {
 		double* sec_map = new double[MSZ * MSZ];
 		security_maps.push_back(sec_map);
@@ -503,12 +536,16 @@ void idle()
 		pg->expand(maze);
 	}
 
+	// the game loop can paused and resumed by pressing the space bar
 	if (!paused)
 	{
+		// each turn we need to update the security maps for all teams
+		// according to the locations of the soldiers on enemy teams
 		cloneAllSecMaps();
 		for (size_t i = 0; i < security_maps.size(); i++)
 			GenerateSecurityMapForSpsificTeam(i);
 
+		// activating each soldier according to its current state
 		for (Team* t : Team::Teams)
 		{
 			vector<Soldier*>& mey = t->getSoldiers();
@@ -517,6 +554,7 @@ void idle()
 				s->getState()->OnEnter(s);
 			}
 		}
+		// moving all the bullets and grenades
 		for (Bullet* b : Bullet::bullets)
 		{
 			b->move(maze);
@@ -526,6 +564,7 @@ void idle()
 			g->expand(maze);
 		}
 
+		// removing bullets and grenades that have stopped moving
 		Bullet::bullets.erase(
 			remove_if(Bullet::bullets.begin(), Bullet::bullets.end(), [](Bullet* b) {
 				if (!b->getIsMoving()) {
@@ -581,17 +620,14 @@ void mouse(int button, int state, int x, int y)
 }
 
 void keyboard(unsigned char key, int x, int y) {
-	if (key == 'r') {
-		init();
-	}
 	if (key == 'g')
-		setGridlines = !setGridlines;
+		setGridlines = !setGridlines;		 // toggle gridlines
 	if (key == 's')
-		showSecurityMap = !showSecurityMap;
+		showSecurityMap = !showSecurityMap;	 // toggle general security map
 	if (key == ' ')
-		paused = !paused;
+		paused = !paused;					 // toggle pause
 	if (key == 'q')
-		exit(0);
+		exit(0);							 // exit the game
 }
 
 LONG MyFilter(LONG excode) {

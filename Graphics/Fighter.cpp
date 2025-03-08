@@ -7,7 +7,8 @@ Fighter::Fighter(Position start_pos, TeamID tid) : Soldier(start_pos, tid)
 	state = new StateSearchEnemy();
 	isReloading = false;
 	reloadTime = 0;
-	ammo_th = 2;
+	ammo_th = (rand() % (MAX_BULLET_CAPACITY_FIGHTER / 3));
+	grenade_th = rand() % (MAX_GRENADE_CAPACITY_FIGHTER / 4);
 	isCallingSquire = false;
 	passive = (rand() % 2 == 0);
 }
@@ -32,11 +33,17 @@ void Fighter::loadGrenade(Position enemy_pos)
 {
 	if (grenade_count > 0 && Team::calculateDistance(getPos(), enemy_pos) <= GRENADE_THROWING_DISTANCE)
 	{
-		Grenade* g = new Grenade(getPos().row, getPos().col, getID());
+		Grenade* g = new Grenade(enemy_pos.row, enemy_pos.col, getID());
 		g->setIsExpending(true);
 		g->explode();
 		Grenade::grenades.push_back(g);
+		setIsReloading(true);
+		reloadTime = RELOAD_TIME_FIGHTER;
 		grenade_count--;
+	}
+	if (grenade_count == 0)
+	{
+		state->Transition(this);
 	}
 }
 
@@ -80,14 +87,14 @@ void Fighter::engageEnemy(Position enemy_pos)
 	}
 
 	int action = rand() % 100;
-	if (action > 50 && !isReloading)
+	if (action > 30 && !isReloading)
 	{
 		loadBullet(enemy_pos);
 	}
-	else if (action <= 50 && action >= 25) {
+	else if (action <= 30 && action > 15 && !isReloading) {
 		loadGrenade(enemy_pos);
 	}
-	else if (action < 25) {
+	else if (action <= 15) {
 		setIsMoving(true);
 		defensiveManouver();
 		setIsMoving(false);
@@ -131,8 +138,12 @@ void Fighter::moveToEnemy(Position enemy_pos)
 		move(c);
 		isEnemyInSightBool = isEnemyInSight(enemy_pos);
 	}
-	if (isEnemyInSightBool)
+	if ((isEnemyInSightBool && passive) || (isEnemyInSightBool && !passive && Team::calculateDistance(getPos(), enemy_pos) <= GRENADE_THROWING_DISTANCE))
 		state->Transition(this);
+
+	// if fighter is passive he will make do with just the bullets
+	// if he is not he will want to get close enough to throw a grenade
+	// passives can by circumstance get close enough to throw a grenade
 }
 
 void Fighter::addToSquireQueue() 

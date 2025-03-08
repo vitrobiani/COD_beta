@@ -9,10 +9,10 @@ class Fighter: public Soldier
 {
 private:
 	int ammo, grenade_count;
-	int ammo_th;
+	int ammo_th, grenade_th;
 	bool isReloading; //determines if the fighter is reloading
 	bool isCallingSquire; // determines if the fighter is in the calling squire queue
-	bool passive; // determines if the fighter is passive or aggressive meaning it will be the one to go into enemy rooms
+	bool passive; // determines if the fighter is passive or aggressive meaning it will get closer to enemies
 	int reloadTime;
 public:
 	Fighter(Position start_pos, TeamID tid);
@@ -27,7 +27,9 @@ public:
 	void defensiveManouver();
 	int getAmmo() const { return ammo; };
 	int getAmmoTh() const { return ammo_th; };
+	int getGrenadeTh() const { return grenade_th; };
 	int getGrenadeCount() const { return grenade_count; };
+	bool getIsPassive() const { return passive; };
 	bool isEnemyInSight(Position enemy_pos);
 	bool isEnemyInSameRoomAsMe(Position enemy_pos);
 	void moveToEnemy(Position enemy_pos);

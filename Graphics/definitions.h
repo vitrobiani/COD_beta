@@ -51,7 +51,6 @@ constexpr int BULLET_DAMAGE = 1;
 constexpr int SQUIRE_DISTANCE_FROM_TEAMMATE = 5;
 constexpr int GRENADE_THROWING_DISTANCE = 8;
 
-
 constexpr int GRENADE_SEC_MAP_AMOUNT = 1000;
 constexpr int SEC_MAP_ITERATIONS = 20;
 
@@ -59,13 +58,13 @@ constexpr int START_HP = 100;
 
 constexpr int MAX_GRENADE_CAPACITY_SQUIRE = 20;
 constexpr int MAX_BULLET_CAPACITY_SQUIRE = 200;
-constexpr int MAX_BULLET_CAPACITY_FIGHTER = 10;
-constexpr int MAX_GRENADE_CAPACITY_FIGHTER = 5;
+constexpr int MAX_BULLET_CAPACITY_FIGHTER = 12;
+constexpr int MAX_GRENADE_CAPACITY_FIGHTER = 8;
 constexpr int RELOAD_TIME_FIGHTER = 15;
 
 constexpr int BFS_DEPTH = 1000;
 
-constexpr int MAX_HEALTH_PACK_CAPACITY_SQUIRE = 20;
+constexpr int MAX_HEALTH_PACK_CAPACITY_SQUIRE = 12;
 
 // Squire code definitions
 constexpr int TOO_FAR_TO_HELP = 1;

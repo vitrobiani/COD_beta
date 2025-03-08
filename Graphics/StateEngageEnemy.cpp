@@ -12,7 +12,7 @@ void StateEngageEnemy::Transition(Soldier* p)
 	Fighter* f = (Fighter*)(p);
 	OnExit(p);
 	State* oldState = p->getState();
-	if (f->getHP() < f->getHP_TH() || f->getAmmo() <= f->getAmmoTh())
+	if (f->getHP() < f->getHP_TH() || f->getAmmo() <= f->getAmmoTh() || f->getGrenadeCount() < f->getGrenadeTh())
 		f->setState(new StateCallSquire());
 	else
 		f->setState(new StateSearchEnemy());

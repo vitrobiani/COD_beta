@@ -8,9 +8,13 @@ Squire::Squire(Position start_pos, TeamID tid) : Soldier(start_pos, tid)
 	grenade_count = MAX_GRENADE_CAPACITY_SQUIRE;
 	health_pack = MAX_HEALTH_PACK_CAPACITY_SQUIRE;
 	state = new StateFindTeammates();
-	ammo_th = 2;
-	health_pack_th = 2;
-	prioritize_ammo = false;
+	ammo_th = (rand() % (MAX_BULLET_CAPACITY_SQUIRE / 10)) + 10;
+	grenade_th = rand() % MAX_GRENADE_CAPACITY_SQUIRE / 5;
+	health_pack_th = rand() % MAX_HEALTH_PACK_CAPACITY_SQUIRE / 3;
+	prioritize_ammo = rand()%2 == 0;
+
+	// when squire has any of the threshholds it will go to the stash 
+	// and he can prioritize ammo or health pack (personallity)
 }
 
 Squire::~Squire()
@@ -76,6 +80,25 @@ int Squire::HelpSoldier(Soldier* s)
 			return RESTOCK;
 		}
 	}
+
+	if (f->getGrenadeCount() < MAX_GRENADE_CAPACITY_FIGHTER)
+	{
+		if (grenade_count > (MAX_GRENADE_CAPACITY_FIGHTER - f->getAmmo()))
+		{
+			grenade_count -= (MAX_GRENADE_CAPACITY_FIGHTER - f->getGrenadeCount());
+			f->setAmmo(MAX_GRENADE_CAPACITY_FIGHTER);
+		}
+		else if (grenade_count > 0)
+		{
+			f->setGrenadeCount(f->getGrenadeCount() + grenade_count);
+			grenade_count = 0;
+			return RESTOCK;
+		}
+		else
+		{
+			return RESTOCK;
+		}
+	}
 	return HELPED_SOLDIER;
 }
 
@@ -86,8 +109,9 @@ void Squire::Restock()
 		prioritize_ammo = !prioritize_ammo;
 	}
 
-	if (prioritize_ammo && ammo < ammo_th && goToStash(Ammo_Stashes)) {
+	if (prioritize_ammo && (ammo < ammo_th || grenade_count < grenade_th) && goToStash(Ammo_Stashes)) {
 		ammo = MAX_BULLET_CAPACITY_SQUIRE;
+		grenade_count = MAX_GRENADE_CAPACITY_SQUIRE;
 		prioritize_ammo = !prioritize_ammo;
 	}
 
