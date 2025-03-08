@@ -24,8 +24,8 @@ void Squire::moveToTeammate(Position teammate_pos)
 	if (isMoving)
 	{
 		cloneMaze(maze, dupMaze);
-		Cell* c = runAS(dupMaze, security_maps.at(getID().team), teammate_pos);
-		move(Position{ c->getRow(), c->getCol() });
+		Position c = runAS(dupMaze, security_maps.at(getID().team), teammate_pos);
+		move(c);
 	}
 }
 
@@ -101,8 +101,8 @@ bool Squire::goToStash(const vector<Position>& stash)
 	if (Team::calculateDistance(getPos(), p) > SQUIRE_DISTANCE_FROM_TEAMMATE)
 	{
 		cloneMaze(maze, dupMaze);
-		Cell* c = this->runAS(dupMaze, security_maps.at(getID().team), p);
-		move(Position{ c->getRow(), c->getCol() });
+		Position c = this->runAS(dupMaze, security_maps.at(getID().team), p);
+		move(c);
 		return false;
 	}
 	else

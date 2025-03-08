@@ -14,15 +14,15 @@ void Soldier::move(Position p)
 {
     if (isMoving)
     {
-        if (maze[p.row][p.col] == SOLDIER)
-            return;
+        //if (maze[p.row][p.col] == SOLDIER)
+        //    return;
         maze[getPos().row][getPos().col] = SPACE;
         maze[p.row][p.col] = SOLDIER;
         setPos(p);
     }
 }
 
-Cell* Soldier::runAS(int maze[MSZ][MSZ], double* security_map, Position target) {
+Position Soldier::runAS(int maze[MSZ][MSZ], double* security_map, Position target) {
     CompareCells comparator;
     priority_queue<Cell*, vector<Cell*>, CompareCells> grays(comparator);
     grays.push(new Cell(getPos().row, getPos().col, target.row, target.col, 0, nullptr, security_map));
@@ -31,17 +31,21 @@ Cell* Soldier::runAS(int maze[MSZ][MSZ], double* security_map, Position target) 
 	while (!to_go_to) {
 		to_go_to = ASIteration(grays, maze, target);
 	}
-    /*for (size_t i = 0; i < grays.size(); ++i)
+
+	Position p = Position{ to_go_to->getRow(), to_go_to->getCol() };
+
+    for (size_t i = 0; i < grays.size(); ++i)
     {
         Cell* cellToPop = grays.top();
+        grays.pop();
         if (cellToPop == to_go_to || cellToPop == to_go_to->getParent())
         {
             continue;
         }
         delete cellToPop;
         cellToPop = nullptr;
-    }*/
-    return to_go_to;
+    }
+    return p;
 }
 
 Cell* Soldier::ASIteration(priority_queue<Cell*, vector<Cell*>, CompareCells>& grays, int maze[MSZ][MSZ], Position target) {
@@ -89,6 +93,10 @@ Cell* Soldier::CheckNeighbor(int row, int col, Cell* pCurrent, Position target, 
 }
 
 Cell* Soldier::RestorePath(Cell* pc) {
+	while (pc->getParent() && pc->getParent()->getParent() != nullptr) {
+	    pc = pc->getParent();
+	}
+    return pc; // Return the next step
     //if (!strcmp(this->getType(), "Squire"))
     //{
     //    while (pc->getParent() && pc->getParent()->getParent()->getParent() != nullptr) {
@@ -96,12 +104,11 @@ Cell* Soldier::RestorePath(Cell* pc) {
     //    }
     //}
     //else {
-        while (pc->getParent() && pc->getParent()->getParent() != nullptr) {
-            pc = pc->getParent();
-        }
+    //  while (pc->getParent() && pc->getParent()->getParent() != nullptr) {
+    //      pc = pc->getParent();
+    //  }
     //}
-
-    return pc; // Return the next step
+    //return pc; // Return the next step
 }
 
 void Soldier::hitByBullet()

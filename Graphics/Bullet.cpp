@@ -45,17 +45,17 @@ Position Bullet::move(int maze[MSZ][MSZ])
 			Soldier* hitSoldier = findSoldierAtPosition(hitPos);
 			if (hitSoldier != nullptr)
 			{
-				cout << "Bullet hit a soldier at position (" << hitPos.row << ", " << hitPos.col << ")\n";
+				//cout << "Bullet hit a soldier at position (" << hitPos.row << ", " << hitPos.col << ")\n";
 				if (isEnemyTeam(hitSoldier))
 				{
-					cout << "The hit soldier is on an enemy team. Soldier Team: " << hitSoldier->getID().team << "Bullet Team: "<< id.team << "\n";
+					//cout << "The hit soldier is on an enemy team. Soldier Team: " << hitSoldier->getID().team << "Bullet Team: "<< id.team << "\n";
 					hitSoldier->hitByBullet();
-					cout << "The hit soldier's HP is now: " << hitSoldier->getHP() << "\n";
+					//cout << "The hit soldier's HP is now: " << hitSoldier->getHP() << "\n";
 					isMoving = false;
 				}
 				else
 				{
-					cout << "The hit soldier is on the same team.\n";
+					//cout << "The hit soldier is on the same team.\n";
 				}
 			}
 			return hitPos;

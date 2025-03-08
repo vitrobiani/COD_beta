@@ -38,7 +38,7 @@ public:
     virtual int getAmmo() = 0;
     virtual int getGrenades() = 0;
 
-	Cell* runAS(int maze[MSZ][MSZ], double* security_map, Position target);
+	Position runAS(int maze[MSZ][MSZ], double* security_map, Position target);
 	Cell* ASIteration(priority_queue<Cell*, vector<Cell*>, CompareCells>& grays, int maze[MSZ][MSZ], Position target);
 	Cell* CheckNeighbor(int row, int col, Cell* pCurrent, Position target, int maze[MSZ][MSZ], priority_queue<Cell*, vector<Cell*>, CompareCells>& grays);
 	Cell* RestorePath(Cell * pc);

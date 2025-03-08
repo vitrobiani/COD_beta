@@ -10,7 +10,9 @@ class Fighter: public Soldier
 private:
 	int ammo, grenade_count;
 	int ammo_th;
-	bool isReloading, isCallingSquire;
+	bool isReloading; //determines if the fighter is reloading
+	bool isCallingSquire; // determines if the fighter is in the calling squire queue
+	bool passive; // determines if the fighter is passive or aggressive meaning it will be the one to go into enemy rooms
 	int reloadTime;
 public:
 	Fighter(Position start_pos, TeamID tid);
@@ -21,10 +23,13 @@ public:
 	void setIsReloading(bool r) { isReloading = r; };
 	void setIsCallingSquire(bool c) { isCallingSquire = c; };
 	void loadBullet(Position enemy_pos);
-	void loadGrenade();
-    int getAmmo() const { return ammo; }
-    int getGrenadeCount() const { return grenade_count; }
+	void loadGrenade(Position enemy_pos);
+	void defensiveManouver();
+	int getAmmo() const { return ammo; };
+	int getAmmoTh() const { return ammo_th; };
+	int getGrenadeCount() const { return grenade_count; };
 	bool isEnemyInSight(Position enemy_pos);
+	bool isEnemyInSameRoomAsMe(Position enemy_pos);
 	void moveToEnemy(Position enemy_pos);
 	void addToSquireQueue();
 	void checkIfFitForFight();

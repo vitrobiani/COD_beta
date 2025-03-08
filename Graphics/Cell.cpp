@@ -40,5 +40,5 @@ void Cell::ComputeH()
 	}
 	double dis = sqrt(pow(row - target_row, 2) + pow(col - target_col, 2)); // higher = more distant
 	double security = security_map[MSZ * row + col]; // higher = less secure
-	h = dis + security * SECURITY_COEFFICIENT;
+	h = dis + security * SECURITY_COEFFICIENT*10;
 }

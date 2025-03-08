@@ -7,12 +7,11 @@ void StateTakeCover::OnEnter(Soldier* p)
 	s->setIsMoving(true);
 	
 	cloneMaze(maze, dupMaze);
-	Cell* c = Team::findBestHeuristicCell(dupMaze, teammate, security_maps.at(p->getID().team));
-	Position p1 = Position{ c->getRow(), c->getCol() };
+	Position c = Team::findBestHeuristicCell(dupMaze, teammate, security_maps.at(p->getID().team));
 
 	cloneMaze(maze, dupMaze);
-	Cell* cell = s->runAS(dupMaze, security_maps.at(p->getID().team), p1);
-	s->move(Position{cell->getRow(), cell->getCol()});
+	Position pos = s->runAS(dupMaze, security_maps.at(p->getID().team), c);
+	s->move(pos);
 	s->doesAnybodyNeedHelp();
 }
 

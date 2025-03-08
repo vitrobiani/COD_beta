@@ -9,6 +9,7 @@ Fighter::Fighter(Position start_pos, TeamID tid) : Soldier(start_pos, tid)
 	reloadTime = 0;
 	ammo_th = 2;
 	isCallingSquire = false;
+	passive = (rand() % 2 == 0);
 }
 
 Fighter::~Fighter()
@@ -17,9 +18,31 @@ Fighter::~Fighter()
 	state = nullptr;
 }
 
+void Fighter::defensiveManouver()
+{
+	if (isMoving)
+	{
+		cloneMaze(maze, dupMaze);
+		Position c = Team::findSafestPosition(maze, this, security_maps.at(getID().team));
+		move(c);
+	}
+}
+
+void Fighter::loadGrenade(Position enemy_pos)
+{
+	if (grenade_count > 0 && Team::calculateDistance(getPos(), enemy_pos) <= GRENADE_THROWING_DISTANCE)
+	{
+		Grenade* g = new Grenade(getPos().row, getPos().col, getID());
+		g->setIsExpending(true);
+		g->explode();
+		Grenade::grenades.push_back(g);
+		grenade_count--;
+	}
+}
+
 void Fighter::loadBullet(Position enemy_pos)
 {
-	if (ammo > 0)
+	if (ammo > ammo_th)
 	{
 		double angle = atan2(enemy_pos.row - pos.row, enemy_pos.col - pos.col);
 		Bullet* b = new Bullet(pos.col+0.5, pos.row+0.5, angle, id);
@@ -36,23 +59,38 @@ void Fighter::loadBullet(Position enemy_pos)
 
 void Fighter::engageEnemy(Position enemy_pos)
 {
-	if (hp < hp_th)
-		state->Transition(this);
-
 	if (isReloading)
 	{
 		reloadTime--;
-		if (reloadTime <= 0) isReloading = false;
-		return;
+		if (reloadTime <= 0) {
+			isReloading = false;
+		}
 	}
-	else
+	
+	if (hp < hp_th)
 	{
-		loadBullet(enemy_pos);
+		state->Transition(this);
+		return;
 	}
 
 	if (!isEnemyInSight(enemy_pos))
 	{
 		state->Transition(this);
+		return;
+	}
+
+	int action = rand() % 100;
+	if (action > 50 && !isReloading)
+	{
+		loadBullet(enemy_pos);
+	}
+	else if (action <= 50 && action >= 25) {
+		loadGrenade(enemy_pos);
+	}
+	else if (action < 25) {
+		setIsMoving(true);
+		defensiveManouver();
+		setIsMoving(false);
 	}
 }
 
@@ -78,14 +116,19 @@ bool Fighter::isEnemyInSight(Position enemy_pos)
 	return retVal;
 }
 
+bool Fighter::isEnemyInSameRoomAsMe(Position enemy_pos)
+{
+	return false;
+}
+
 void Fighter::moveToEnemy(Position enemy_pos)
 {
 	bool isEnemyInSightBool = false;
 	if (isMoving)
 	{
 		cloneMaze(maze, dupMaze);
-		Cell* c = runAS(dupMaze, security_maps.at(getID().team), enemy_pos);
-		move(Position{ c->getRow(), c->getCol() });
+		Position c = runAS(dupMaze, security_maps.at(getID().team), enemy_pos);
+		move(c);
 		isEnemyInSightBool = isEnemyInSight(enemy_pos);
 	}
 	if (isEnemyInSightBool)

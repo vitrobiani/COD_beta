@@ -1,5 +1,6 @@
 #include "Grenade.h"
 
+vector<Grenade*> Grenade::grenades;
 Grenade::Grenade(double r, double c)
 {
 	int i;
@@ -11,6 +12,8 @@ Grenade::Grenade(double r, double c)
 		//bullets[i] = new Bullet(col, row, i * alpha);
 		bullets[i].reset(new Bullet(col, row, i * alpha));
 	}
+	isExpending = false;
+	id = TeamID{ -1, -1 };
 }
 
 Grenade::Grenade(double r, double c, TeamID tid)
@@ -25,6 +28,7 @@ Grenade::Grenade(double r, double c, TeamID tid)
 		bullets[i].reset(new Bullet(col, row, i * alpha, tid));
 	}
 	id = tid;
+	isExpending = false;
 }
 
 Grenade::~Grenade()

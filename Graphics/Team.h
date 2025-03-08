@@ -35,7 +35,7 @@ public:
 
 	// this return the next cell the soldier should go to to get to saftey
 	static Position findSafestPosition(int maze[MSZ][MSZ], Soldier* s, double* sec_map);
-	static Cell* findBestHeuristicCell(int maze[MSZ][MSZ], Soldier* s, double* sec_map);
+	static Position findBestHeuristicCell(int maze[MSZ][MSZ], Soldier* s, double* sec_map);
 	static Cell* BFSIteration(queue<Cell*>& grays, int maze[MSZ][MSZ]);
 	static void CheckNeighbor(Position p, Cell* pCurrent, int maze[MSZ][MSZ], queue<Cell*>& grays);
 	static Cell* RestorePath(Cell* pc);

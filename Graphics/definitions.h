@@ -45,10 +45,12 @@ constexpr int HEALTH_PACK_STASH_AMOUNT = 2;
 constexpr double SECURITY_FACTOR = 0.001;
 constexpr double SECURITY_COEFFICIENT = 15;
 constexpr int GRENADE_SEC_MAP_PER_TEAM = 30;
-constexpr int IS_ENEMY_IN_SIGHT = 4;
+constexpr int IS_ENEMY_IN_SIGHT = 10;
 constexpr double BULLET_SPEED = 0.3;
 constexpr int BULLET_DAMAGE = 1;
 constexpr int SQUIRE_DISTANCE_FROM_TEAMMATE = 5;
+constexpr int GRENADE_THROWING_DISTANCE = 8;
+
 
 constexpr int GRENADE_SEC_MAP_AMOUNT = 1000;
 constexpr int SEC_MAP_ITERATIONS = 20;
@@ -61,7 +63,7 @@ constexpr int MAX_BULLET_CAPACITY_FIGHTER = 10;
 constexpr int MAX_GRENADE_CAPACITY_FIGHTER = 5;
 constexpr int RELOAD_TIME_FIGHTER = 15;
 
-constexpr int BFS_DEPTH = 400;
+constexpr int BFS_DEPTH = 1000;
 
 constexpr int MAX_HEALTH_PACK_CAPACITY_SQUIRE = 20;
 

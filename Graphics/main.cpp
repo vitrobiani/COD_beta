@@ -33,7 +33,6 @@ vector<double*> security_maps;
 vector<Position> HP_Stashes;
 vector<Position> Ammo_Stashes;
 
-
 bool setGridlines = false;
 bool showSecurityMap = false;
 bool paused = true;
@@ -396,18 +395,21 @@ void GenerateSecurityMapForSpsificTeam(int TeamNum)
 		{
 			continue;
 		}
+		//double* clonedMap = new double[MSZ * MSZ]();
+		//double clonedMap[MSZ][MSZ] = { 0 };
+		//cloneSecurityMap(security_map, clonedMap);
+		cloneSecurityMapToPtr(security_map, security_maps.at(TeamNum));
+        double (*clonedMap)[MSZ] = reinterpret_cast<double (*)[MSZ]>(security_maps.at(TeamNum));
 		for (Soldier* s : t->getSoldiers())
 		{
 			Grenade* g = new Grenade(s->getPos().row, s->getPos().col);
 			
-			double clonedMap[MSZ][MSZ] = { 0 };
-			cloneSecurityMap(security_map, clonedMap);
 			g->simulateExplosion(maze, clonedMap);
-			cloneSecurityMapToPtr(clonedMap, security_maps.at(s->getID().team));
 
 			delete g;
 			g = nullptr;
 		}
+		cloneSecurityMapToPtr(clonedMap, security_maps.at(TeamNum));
 	}
 }
 
@@ -472,7 +474,7 @@ void init()
 	//srand(time(0));
 
 	SetupDungeon();
-	
+
 	GenerateSecurityMap();
 	initSecurityMaps();
 }
@@ -516,11 +518,12 @@ void idle()
 		for (Bullet* b : Bullet::bullets)
 		{
 			b->move(maze);
-			//if (b && !b->getIsMoving())
-			//{
-			//	Bullet::bullets.erase(find(Bullet::bullets.begin(), Bullet::bullets.end(), b));
-			//}
 		}
+		for (Grenade* g : Grenade::grenades)
+		{
+			g->expand(maze);
+		}
+
 		Bullet::bullets.erase(
 			remove_if(Bullet::bullets.begin(), Bullet::bullets.end(), [](Bullet* b) {
 				if (!b->getIsMoving()) {
@@ -531,6 +534,17 @@ void idle()
 				return false;
 			}),
 			Bullet::bullets.end()
+		);
+		Grenade::grenades.erase(
+			remove_if(Grenade::grenades.begin(), Grenade::grenades.end(), [](Grenade* g) {
+				if (!g->getIsExpending()) {
+					delete g;
+					g = nullptr;
+					return true;
+				}
+				return false;
+				}),
+			Grenade::grenades.end()
 		);
 	}
 
