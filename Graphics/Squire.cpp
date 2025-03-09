@@ -109,7 +109,7 @@ void Squire::Restock()
 	}
 
 	if ((prioritize_ammo || health_pack > health_pack_th) && (ammo < ammo_th || grenade_count < grenade_th) && goToStash(Ammo_Stashes)) {
-		ammo = MAX_BULLET_CAPACITY_SQUIRE;
+ 		ammo = MAX_BULLET_CAPACITY_SQUIRE;
 		grenade_count = MAX_GRENADE_CAPACITY_SQUIRE;
 	}
 
