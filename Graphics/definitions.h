@@ -51,6 +51,8 @@ constexpr int BULLET_DAMAGE = 1;
 constexpr int SQUIRE_DISTANCE_FROM_TEAMMATE = 5;
 constexpr int GRENADE_THROWING_DISTANCE = 8;
 
+constexpr int soldierStucknessLimit = 20;
+
 constexpr int GRENADE_SEC_MAP_AMOUNT = 1000;
 constexpr int SEC_MAP_ITERATIONS = 20;
 

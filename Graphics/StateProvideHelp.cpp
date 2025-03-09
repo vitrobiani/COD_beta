@@ -11,7 +11,29 @@ void StateProvideHelp::OnEnter(Soldier* p)
 	{
 	case TOO_FAR_TO_HELP:
 		s->setIsMoving(true);
-		s->moveToTeammate(f->getPos());
+		Position targetPos = f->getPos();
+		//s->stuckCheckDeque.push_back(targetPos);
+		//if (s->stuckCheckDeque.size() > 2)
+		//{
+		//	int indexToCheck = s->stuckCheckDeque.size() - 3;	// potential reoccurance of the same position
+		//	if (targetPos.row != s->stuckCheckDeque.at(indexToCheck).row || targetPos.col != s->stuckCheckDeque.at(indexToCheck).col)
+		//	{
+		//		s->stuckCheckDeque.pop_front();
+		//	}
+		//	else if (s->stuckCheckDeque.size() > soldierStucknessLimit)
+		//	{
+		//		int diffX = s->getPos().col - targetPos.col;
+		//		int diffY = s->getPos().row - targetPos.row;
+		//		int altNextMoveStatus = maze[s->getPos().row + diffY][s->getPos().col + diffX];	// look at the opposite of the best cell to move to
+		//		if (altNextMoveStatus != WALL && altNextMoveStatus != AMMO_STASH && altNextMoveStatus != HP_STASH)
+		//		{
+		//			targetPos.col = s->getPos().col + diffX;
+		//			targetPos.row = s->getPos().row + diffY;
+		//		}
+		//		s->stuckCheckDeque.clear();
+		//	}
+		//}
+		s->moveToTeammate(targetPos);
 		break;
 	case HELPED_SOLDIER:
 		Team::Teams.at(s->getID().team)->callingSquires.pop();

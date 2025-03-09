@@ -16,6 +16,7 @@ protected:
 	TeamID id;
 	State* state;
 public:
+	deque<Position> stuckCheckDeque;
 	//static vector<vector<Soldier*>> Teams;
 	////static Soldier* Teams[TEAM_NUM][TEAM_SIZE];
 	//static void addSoldier(Soldier* s) { Teams[s->getID().team].push_back(s); };
