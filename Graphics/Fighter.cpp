@@ -38,7 +38,7 @@ void Fighter::loadGrenade(Position enemy_pos)
 		g->explode();
 		Grenade::grenades.push_back(g);
 		setIsReloading(true);
-		reloadTime = RELOAD_TIME_FIGHTER;
+		reloadTime = RELOAD_TIME_FIGHTER + (passive ? 5 : 0);
 		grenade_count--;
 	}
 	if (grenade_count == 0)
@@ -56,7 +56,7 @@ void Fighter::loadBullet(Position enemy_pos)
 		Bullet::bullets.push_back(b);
 		b->setIsMoving(true);
 		setIsReloading(true);
-		reloadTime = RELOAD_TIME_FIGHTER;
+		reloadTime = RELOAD_TIME_FIGHTER + (passive ? 5 : 0);
 		ammo--;
 	}
 	else {

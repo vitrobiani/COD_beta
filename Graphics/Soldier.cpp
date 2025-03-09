@@ -7,7 +7,7 @@ Soldier::Soldier(Position start_pos, TeamID tid)
 	id = tid;
 	isMoving = false;
 	state = nullptr;
-	hp_th = rand() % START_HP/ 5;
+	hp_th = rand() % START_HP / 5;
 }
 
 void Soldier::move(Position p)
@@ -28,11 +28,13 @@ Position Soldier::runAS(int maze[MSZ][MSZ], double* security_map, Position targe
     grays.push(new Cell(getPos().row, getPos().col, target.row, target.col, 0, nullptr, security_map));
 
     Cell* to_go_to = nullptr;
+    int i = 0;
 	while (!to_go_to) {
 		to_go_to = ASIteration(grays, maze, target);
+        i++;
 	}
 
-	Position p = Position{ to_go_to->getRow(), to_go_to->getCol() };
+	Position p = Position { to_go_to->getRow(), to_go_to->getCol() };
 
     for (size_t i = 0; i < grays.size(); ++i)
     {
@@ -55,6 +57,10 @@ Cell* Soldier::ASIteration(priority_queue<Cell*, vector<Cell*>, CompareCells>& g
 
     Cell* pCurrent = grays.top();
     grays.pop();
+
+    if (grays.size() == 0 && target.row == 44 && target.col == 17) {
+        int x = 5;
+    }
 
     int row = pCurrent->getRow();
     int col = pCurrent->getCol();

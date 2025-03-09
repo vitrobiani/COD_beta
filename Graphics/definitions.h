@@ -57,7 +57,7 @@ constexpr int SEC_MAP_ITERATIONS = 20;
 constexpr int START_HP = 100;
 
 constexpr int MAX_GRENADE_CAPACITY_SQUIRE = 20;
-constexpr int MAX_BULLET_CAPACITY_SQUIRE = 200;
+constexpr int MAX_BULLET_CAPACITY_SQUIRE = 10;
 constexpr int MAX_BULLET_CAPACITY_FIGHTER = 12;
 constexpr int MAX_GRENADE_CAPACITY_FIGHTER = 8;
 constexpr int RELOAD_TIME_FIGHTER = 15;

@@ -104,15 +104,13 @@ int Squire::HelpSoldier(Soldier* s)
 
 void Squire::Restock()
 {
-	if (!prioritize_ammo && health_pack < health_pack_th && goToStash(HP_Stashes)) {
+	if ((!prioritize_ammo || ammo > ammo_th) && health_pack < health_pack_th && goToStash(HP_Stashes)) {
 		health_pack = MAX_HEALTH_PACK_CAPACITY_SQUIRE;
-		prioritize_ammo = !prioritize_ammo;
 	}
 
-	if (prioritize_ammo && (ammo < ammo_th || grenade_count < grenade_th) && goToStash(Ammo_Stashes)) {
+	if ((prioritize_ammo || health_pack > health_pack_th) && (ammo < ammo_th || grenade_count < grenade_th) && goToStash(Ammo_Stashes)) {
 		ammo = MAX_BULLET_CAPACITY_SQUIRE;
 		grenade_count = MAX_GRENADE_CAPACITY_SQUIRE;
-		prioritize_ammo = !prioritize_ammo;
 	}
 
 	if (ammo > ammo_th && health_pack > health_pack_th)
@@ -125,7 +123,7 @@ bool Squire::goToStash(const vector<Position>& stash)
 	if (Team::calculateDistance(getPos(), p) > SQUIRE_DISTANCE_FROM_TEAMMATE)
 	{
 		cloneMaze(maze, dupMaze);
-		Position c = this->runAS(dupMaze, security_maps.at(getID().team), p);
+		Position c = runAS(dupMaze, security_maps.at(getID().team), p);
 		move(c);
 		return false;
 	}

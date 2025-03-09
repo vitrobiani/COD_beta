@@ -644,7 +644,7 @@ int main(int argc, char* argv[])
 		glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
 		glutInitWindowSize(WIDTH, HEIGHT);
 		glutInitWindowPosition(350, 70);
-		glutCreateWindow("BFS");
+		glutCreateWindow("COD beta");
 
 		// display is a refresh function
 		glutDisplayFunc(display);

@@ -10,7 +10,7 @@ class Fighter: public Soldier
 private:
 	int ammo, grenade_count;
 	int ammo_th, grenade_th;
-	bool isReloading; //determines if the fighter is reloading
+	bool isReloading; // determines if the fighter is reloading
 	bool isCallingSquire; // determines if the fighter is in the calling squire queue
 	bool passive; // determines if the fighter is passive or aggressive meaning it will get closer to enemies
 	int reloadTime;
