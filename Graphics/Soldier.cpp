@@ -73,13 +73,13 @@ Cell* Soldier::ASIteration(priority_queue<Cell*, vector<Cell*>, CompareCells>& g
 
     Cell* go_on = nullptr;
     // Check neighbors
-    if (maze[row + 1][col] == SPACE || maze[row + 1][col] == SOLDIER)
+    if (maze[row + 1][col] == SPACE || maze[row + 1][col] == SOLDIER || maze[row + 1][col] == AMMO_STASH || maze[row + 1][col] == HP_STASH)
         go_on = CheckNeighbor(row + 1, col, pCurrent, target, maze, grays);
-    if (!go_on && (maze[row - 1][col] == SPACE || maze[row - 1][col] == SOLDIER))
+    if (!go_on && (maze[row - 1][col] == SPACE || maze[row - 1][col] == SOLDIER || maze[row - 1][col] == AMMO_STASH || maze[row - 1][col] == HP_STASH))
         go_on = CheckNeighbor(row - 1, col, pCurrent, target, maze, grays);                                
-    if (!go_on && (maze[row][col - 1] == SPACE || maze[row][col - 1] == SOLDIER))
+    if (!go_on && (maze[row][col - 1] == SPACE || maze[row][col - 1] == SOLDIER || maze[row][col - 1] == AMMO_STASH || maze[row][col - 1] == HP_STASH))
         go_on = CheckNeighbor(row, col - 1, pCurrent, target, maze, grays);                               
-    if (!go_on && (maze[row][col + 1] == SPACE || maze[row][col + 1] == SOLDIER))
+    if (!go_on && (maze[row][col + 1] == SPACE || maze[row][col + 1] == SOLDIER || maze[row][col + 1] == AMMO_STASH || maze[row][col + 1] == HP_STASH))
         go_on = CheckNeighbor(row, col + 1, pCurrent, target, maze, grays);
 
     return go_on;
