@@ -10,7 +10,7 @@ Bullet::Bullet(double xx, double yy, double angle)
 	dir_angle = angle;
 	dirX = cos(angle);
 	dirY = sin(angle);
-	speed = BULLET_SPEED;
+	speed = 0.3;
 	id = {-1, -1};
 	isMoving = false;
 	isVirtual = true;

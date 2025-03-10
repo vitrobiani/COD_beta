@@ -2,6 +2,7 @@
 #include "Fighter.h"
 
 vector<Team*> Team::Teams;
+vector<Soldier*> Team::dead_soldiers;
 //queue<Soldier*> Team::callingSquires;
 Team::Team(vector<array<double, 3>> tc)
 {
@@ -31,10 +32,10 @@ void Team::addSoldier(Position start_pos, bool isFighter)
 		soldiers.push_back(new Squire(start_pos, generateTeamIDForSoldier()));
 }
 
-Soldier* Team::findNearestEnemy(Soldier* s)
+Position Team::findNearestEnemy(Soldier* s)
 {
 	double distance = INFINITY;
-	Soldier* nearest = nullptr;
+	Position nearest = {};
 	for (Team* t : Teams)
 	{
 		if (t->getTeamID().team == s->getID().team)
@@ -42,7 +43,7 @@ Soldier* Team::findNearestEnemy(Soldier* s)
 		for (Soldier* sol : t->getSoldiers()) {
 			double check = calculateDistance(sol->getPos(), s->getPos());
 			if (check < distance) {
-				nearest = sol;
+				nearest = sol->getPos();
 				distance = check;
 			}
 		}
@@ -56,7 +57,7 @@ Soldier* Team::findTarget(Soldier* s)
 	if (action > 80)
 	{
 		Soldier* sq = findNearestEnemySquire(s);
-		if (sq)
+		if (sq == nullptr)
 		{
 			return findLowestHealthEnemy(s);
 		}
@@ -68,7 +69,8 @@ Soldier* Team::findTarget(Soldier* s)
 	}
 	else
 	{
-		return findNearestEnemy(s);
+		//return findNearestEnemy(s);
+		return nullptr;
 	}
 }
 

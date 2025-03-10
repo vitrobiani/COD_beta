@@ -506,7 +506,7 @@ void init()
 	glClearColor(0.5, 0.5, 0.5, 0);// color of window background
 	glOrtho(0, MSZ, 0, MSZ, -1, 1); // set the coordinates system
 
-	srand(3);
+	srand(time(0));
 
 	SetupDungeon();
 
@@ -597,8 +597,7 @@ void idle()
 			mey.erase(
 				remove_if(mey.begin(), mey.end(), [](Soldier* g) {
 					if (!g->getIsAlive()) {
-						delete g;
-						g = nullptr;
+						Team::dead_soldiers.push_back(g);
 						return true;
 					}
 					return false;

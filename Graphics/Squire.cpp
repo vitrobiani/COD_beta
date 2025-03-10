@@ -44,7 +44,8 @@ void Squire::doesAnybodyNeedHelp()
 int Squire::HelpSoldier(Soldier* s)
 {
 	Fighter* f = (Fighter*)s;
-	if (!f->getIsAlive())
+	auto it = find(Team::dead_soldiers.begin(), Team::dead_soldiers.end(), f);
+	if (it != Team::dead_soldiers.end())
 	{
 		return IS_DEAD;
 	}

@@ -12,7 +12,7 @@ using namespace std;
 constexpr int MSZ = 100;
 
 constexpr int TEAM_NUM = 2;
-constexpr int TEAM_SIZE = 3;
+constexpr int TEAM_SIZE = 2;
 
 constexpr int WIDTH = 700;
 constexpr int HEIGHT = 700;
@@ -47,7 +47,7 @@ constexpr double SECURITY_COEFFICIENT = 15;
 constexpr int GRENADE_SEC_MAP_PER_TEAM = 30;
 constexpr int IS_ENEMY_IN_SIGHT = 10;
 constexpr double BULLET_SPEED = 1.2;
-constexpr int BULLET_DAMAGE = 10;
+constexpr int BULLET_DAMAGE = 15;
 constexpr int SQUIRE_DISTANCE_FROM_TEAMMATE = 5;
 constexpr int GRENADE_THROWING_DISTANCE = 8;
 
