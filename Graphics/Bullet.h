@@ -16,6 +16,7 @@ public:
 	static vector<Bullet*> bullets;
 	Bullet(double xx, double yy, double angle);
 	Bullet(double xx, double yy, double angle, TeamID tid);
+	~Bullet() = default;
 	Position move(int maze[MSZ][MSZ]);
 	void show();
 	void setIsMoving(bool value) { isMoving = value; }

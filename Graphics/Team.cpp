@@ -3,7 +3,6 @@
 
 vector<Team*> Team::Teams;
 vector<Soldier*> Team::dead_soldiers;
-//queue<Soldier*> Team::callingSquires;
 Team::Team(vector<array<double, 3>> tc)
 {
 	teamColor = tc;
@@ -222,17 +221,17 @@ Position Team::findBestHeuristicCell(int maze[MSZ][MSZ], Soldier* s, double* sec
     }
 	Position p = Position{ to_go_to->getRow(), to_go_to->getCol() };
 
-	for (size_t i = 0; i < grays.size(); ++i)
-	{
-		Cell* cellToPop = grays.front();
-		grays.pop();
-		if (cellToPop == to_go_to)
-		{
-			continue;
-		}
-		delete cellToPop;
+	while (!grays.empty()) {
+        Cell* cellToPop = grays.front();
+        grays.pop();
+        delete cellToPop;
 		cellToPop = nullptr;
-	}
+    }
+
+    // Clean up cells vector
+    for (Cell* cell : cells) {
+        delete cell;
+    }
 
     return p;
 }

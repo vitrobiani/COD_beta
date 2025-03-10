@@ -49,7 +49,5 @@ public:
 	Cell* RestorePath(Cell * pc);
 
 	void hitByBullet();
-	//Cell* runBFS(int maze[MSZ][MSZ], int curRow, int curCol);
-	//Cell* BFSIteration(queue<Cell*>& grays, int maze[MSZ][MSZ], vector<int> targets, bool forH);
 };
 

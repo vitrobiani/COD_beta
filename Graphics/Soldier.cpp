@@ -36,17 +36,13 @@ Position Soldier::runAS(int maze[MSZ][MSZ], double* security_map, Position targe
 
 	Position p = Position { to_go_to->getRow(), to_go_to->getCol() };
 
-    for (size_t i = 0; i < grays.size(); ++i)
-    {
+    while (!grays.empty()) {
         Cell* cellToPop = grays.top();
         grays.pop();
-        if (cellToPop == to_go_to || cellToPop == to_go_to->getParent())
-        {
-            continue;
-        }
         delete cellToPop;
-        cellToPop = nullptr;
+		cellToPop = nullptr;
     }
+
     return p;
 }
 
@@ -103,18 +99,6 @@ Cell* Soldier::RestorePath(Cell* pc) {
 	    pc = pc->getParent();
 	}
     return pc; // Return the next step
-    //if (!strcmp(this->getType(), "Squire"))
-    //{
-    //    while (pc->getParent() && pc->getParent()->getParent()->getParent() != nullptr) {
-    //        pc = pc->getParent();
-    //    }
-    //}
-    //else {
-    //  while (pc->getParent() && pc->getParent()->getParent() != nullptr) {
-    //      pc = pc->getParent();
-    //  }
-    //}
-    //return pc; // Return the next step
 }
 
 void Soldier::hitByBullet()
