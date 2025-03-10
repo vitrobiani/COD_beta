@@ -22,7 +22,7 @@ void StateTakeCover::Transition(Soldier* p)
 	p->setState(new StateProvideHelp());
 	delete oldState;
 	oldState = nullptr;
-	p->getState()->OnEnter(p);
+	//p->getState()->OnEnter(p);
 }
 
 void StateTakeCover::OnExit(Soldier* p)

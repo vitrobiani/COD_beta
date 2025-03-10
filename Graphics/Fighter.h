@@ -14,6 +14,7 @@ private:
 	bool isCallingSquire; // determines if the fighter is in the calling squire queue
 	bool passive; // determines if the fighter is passive or aggressive meaning it will get closer to enemies
 	int reloadTime;
+	Soldier* target;
 public:
 	Fighter(Position start_pos, TeamID tid);
 	~Fighter();
@@ -30,6 +31,8 @@ public:
 	int getGrenadeTh() const { return grenade_th; };
 	int getGrenadeCount() const { return grenade_count; };
 	bool getIsPassive() const { return passive; };
+	void setTarget(Soldier* t) { target = t; };
+	Soldier* getTarget() { return target; };
 	bool isEnemyInSight(Position enemy_pos);
 	bool isEnemyInSameRoomAsMe(Position enemy_pos);
 	void moveToEnemy(Position enemy_pos);

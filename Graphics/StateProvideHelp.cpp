@@ -42,6 +42,9 @@ void StateProvideHelp::OnEnter(Soldier* p)
 		restock = true;
 		Transition(p);
 		break;
+	case IS_DEAD:
+		Team::Teams.at(s->getID().team)->callingSquires.pop();
+		break;
 	default:
 		break;
 	}

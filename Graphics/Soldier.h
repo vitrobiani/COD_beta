@@ -15,6 +15,7 @@ protected:
 	Position pos;
 	TeamID id;
 	State* state;
+	bool isAlive = true;
 public:
 	deque<Position> stuckCheckDeque;
 	//static vector<vector<Soldier*>> Teams;
@@ -35,6 +36,8 @@ public:
 	TeamID getID() { return id; };
 	int getHPTh() { return hp_th; };
 	void move(Position p);
+	void unalive() { isAlive = false; };
+	bool getIsAlive() { return isAlive; };
 
     virtual const char* getType() = 0;
     virtual int getAmmo() = 0;

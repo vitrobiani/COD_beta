@@ -44,6 +44,10 @@ void Squire::doesAnybodyNeedHelp()
 int Squire::HelpSoldier(Soldier* s)
 {
 	Fighter* f = (Fighter*)s;
+	if (!f->getIsAlive())
+	{
+		return IS_DEAD;
+	}
 	if (Team::calculateDistance(getPos(), f->getPos()) > SQUIRE_DISTANCE_FROM_TEAMMATE)
 	{
 		return TOO_FAR_TO_HELP;
@@ -104,11 +108,11 @@ int Squire::HelpSoldier(Soldier* s)
 
 void Squire::Restock()
 {
-	if ((!prioritize_ammo || ammo > ammo_th) && health_pack < health_pack_th && goToStash(HP_Stashes)) {
+	if ((!prioritize_ammo || ammo > ammo_th) && health_pack <= health_pack_th && goToStash(HP_Stashes)) {
 		health_pack = MAX_HEALTH_PACK_CAPACITY_SQUIRE;
 	}
 
-	if ((prioritize_ammo || health_pack > health_pack_th) && (ammo < ammo_th || grenade_count < grenade_th) && goToStash(Ammo_Stashes)) {
+	if ((prioritize_ammo || health_pack > health_pack_th) && (ammo < ammo_th) && goToStash(Ammo_Stashes)) {
  		ammo = MAX_BULLET_CAPACITY_SQUIRE;
 		grenade_count = MAX_GRENADE_CAPACITY_SQUIRE;
 	}

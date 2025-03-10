@@ -506,7 +506,7 @@ void init()
 	glClearColor(0.5, 0.5, 0.5, 0);// color of window background
 	glOrtho(0, MSZ, 0, MSZ, -1, 1); // set the coordinates system
 
-	//srand(time(0));
+	srand(3);
 
 	SetupDungeon();
 
@@ -552,6 +552,10 @@ void idle()
 			for (Soldier* s : mey)
 			{
 				s->getState()->OnEnter(s);
+				if (s->getHP() <= 0)
+				{
+					s->unalive();
+				}
 			}
 		}
 		// moving all the bullets and grenades
@@ -587,6 +591,26 @@ void idle()
 				}),
 			Grenade::grenades.end()
 		);
+		for (Team* t : Team::Teams)
+		{
+			vector<Soldier*>& mey = t->getSoldiers();
+			mey.erase(
+				remove_if(mey.begin(), mey.end(), [](Soldier* g) {
+					if (!g->getIsAlive()) {
+						delete g;
+						g = nullptr;
+						return true;
+					}
+					return false;
+					}),
+				mey.end()
+			);
+			if (mey.size() == 0)
+			{
+				paused = true;
+				cout << "Team " << (!t->getTeamID().team ? "Orange" : "Purple") << " has WON!\n";
+			}
+		}
 	}
 
 	glutPostRedisplay(); // indirect call to display

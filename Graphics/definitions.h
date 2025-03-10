@@ -46,8 +46,8 @@ constexpr double SECURITY_FACTOR = 0.001;
 constexpr double SECURITY_COEFFICIENT = 15;
 constexpr int GRENADE_SEC_MAP_PER_TEAM = 30;
 constexpr int IS_ENEMY_IN_SIGHT = 10;
-constexpr double BULLET_SPEED = 0.3;
-constexpr int BULLET_DAMAGE = 1;
+constexpr double BULLET_SPEED = 1.2;
+constexpr int BULLET_DAMAGE = 10;
 constexpr int SQUIRE_DISTANCE_FROM_TEAMMATE = 5;
 constexpr int GRENADE_THROWING_DISTANCE = 8;
 
@@ -72,6 +72,7 @@ constexpr int MAX_HEALTH_PACK_CAPACITY_SQUIRE = 12;
 constexpr int TOO_FAR_TO_HELP = 1;
 constexpr int RESTOCK = 2;
 constexpr int HELPED_SOLDIER = 3;
+constexpr int IS_DEAD = 4;
 
 extern int maze[MSZ][MSZ];
 extern int dupMaze[MSZ][MSZ];

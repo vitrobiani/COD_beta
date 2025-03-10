@@ -4,7 +4,8 @@ void StateSearchEnemy::OnEnter(Soldier* p)
 {
 	Fighter* f = (Fighter*)(p);
 	f->setIsMoving(true);
-	Position enemy_pos = Team::findNearestEnemy(f);
+	//f->setTarget(Team::findTarget(f));
+	Position enemy_pos = Team::findNearestEnemy(f)->getPos();
 	f->moveToEnemy(enemy_pos);
 }
 

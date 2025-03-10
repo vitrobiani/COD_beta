@@ -7,7 +7,7 @@ Soldier::Soldier(Position start_pos, TeamID tid)
 	id = tid;
 	isMoving = false;
 	state = nullptr;
-	hp_th = rand() % START_HP / 5;
+	hp_th = (rand() % START_HP / 4) + BULLET_DAMAGE;
 }
 
 void Soldier::move(Position p)

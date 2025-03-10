@@ -31,10 +31,10 @@ void Team::addSoldier(Position start_pos, bool isFighter)
 		soldiers.push_back(new Squire(start_pos, generateTeamIDForSoldier()));
 }
 
-Position Team::findNearestEnemy(Soldier* s)
+Soldier* Team::findNearestEnemy(Soldier* s)
 {
 	double distance = INFINITY;
-	Position nearest = {};
+	Soldier* nearest = nullptr;
 	for (Team* t : Teams)
 	{
 		if (t->getTeamID().team == s->getID().team)
@@ -42,7 +42,68 @@ Position Team::findNearestEnemy(Soldier* s)
 		for (Soldier* sol : t->getSoldiers()) {
 			double check = calculateDistance(sol->getPos(), s->getPos());
 			if (check < distance) {
-				nearest = sol->getPos();
+				nearest = sol;
+				distance = check;
+			}
+		}
+	}
+	return nearest;
+}
+
+Soldier* Team::findTarget(Soldier* s)
+{
+	int action = rand() % 100;
+	if (action > 80)
+	{
+		Soldier* sq = findNearestEnemySquire(s);
+		if (sq)
+		{
+			return findLowestHealthEnemy(s);
+		}
+		return sq;
+	}
+	else if (action <= 80 && action > 50)
+	{
+		return findLowestHealthEnemy(s);
+	}
+	else
+	{
+		return findNearestEnemy(s);
+	}
+}
+
+Soldier* Team::findLowestHealthEnemy(Soldier* s)
+{
+	double health = INFINITY;
+	Soldier* lowest = nullptr;
+	for (Team* t : Teams)
+	{
+		if (t->getTeamID().team == s->getID().team)
+			continue;
+		for (Soldier* sol : t->getSoldiers()) {
+			if (sol->getHP() < health) {
+				lowest = sol;
+				health = sol->getHP();
+			}
+		}
+	}
+	return lowest;
+}
+
+Soldier* Team::findNearestEnemySquire(Soldier* s)
+{
+	double distance = INFINITY;
+	Soldier* nearest = nullptr;
+	for (Team* t : Teams)
+	{
+		if (t->getTeamID().team == s->getID().team)
+			continue;
+		for (Soldier* sol : t->getSoldiers()) {
+			if (dynamic_cast<Fighter*>(sol))
+				continue;
+			double check = calculateDistance(sol->getPos(), s->getPos());
+			if (check < distance) {
+				nearest = sol;
 				distance = check;
 			}
 		}
