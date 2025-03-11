@@ -3,8 +3,8 @@
 void StateEngageEnemy::OnEnter(Soldier* p)
 {
 	Fighter* f = (Fighter*)(p);
-	Position enemy_pos = Team::findNearestEnemy(f);
-	f->engageEnemy(enemy_pos);
+	//Position enemy_pos = Team::findNearestEnemy(f);
+	f->engageEnemy();
 }
 
 void StateEngageEnemy::Transition(Soldier* p)
@@ -19,7 +19,7 @@ void StateEngageEnemy::Transition(Soldier* p)
 
 	delete oldState;
 	oldState = nullptr;
-	p->getState()->OnEnter(p);
+	//p->getState()->OnEnter(p);
 }
 
 void StateEngageEnemy::OnExit(Soldier* p)

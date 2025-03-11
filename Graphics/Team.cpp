@@ -31,6 +31,25 @@ void Team::addSoldier(Position start_pos, bool isFighter)
 		soldiers.push_back(new Squire(start_pos, generateTeamIDForSoldier()));
 }
 
+Soldier* Team::findNearestEnemySoldier(Soldier* s)
+{
+	double distance = INFINITY;
+	Soldier* nearest = nullptr;
+	for (Team* t : Teams)
+	{
+		if (t->getTeamID().team == s->getID().team)
+			continue;
+		for (Soldier* sol : t->getSoldiers()) {
+			double check = calculateDistance(sol->getPos(), s->getPos());
+			if (check < distance) {
+				nearest = sol;
+				distance = check;
+			}
+		}
+	}
+	return nearest;
+}
+
 Position Team::findNearestEnemy(Soldier* s)
 {
 	double distance = INFINITY;
@@ -68,8 +87,7 @@ Soldier* Team::findTarget(Soldier* s)
 	}
 	else
 	{
-		//return findNearestEnemy(s);
-		return nullptr;
+		return findNearestEnemySoldier(s);
 	}
 }
 

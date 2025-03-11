@@ -269,7 +269,8 @@ void initSoldierTeams()
 				<< "ammo: " << f->getAmmo() << " grenades: " << s->getGrenades() << "\n"
 				<< "ammo_th: " << f->getAmmoTh() << " grenade_th: " << f->getGrenadeTh() << "\n"
 				<< "hp: " << f->getHP() << " hp_th: " << f->getHPTh() << "\n"
-                << "Fighter is " << (f->getIsPassive() ? "passive" : "aggressive") << "\n";
+                << "Fighter is " << (f->getIsPassive() ? "passive" : "aggressive") << "\n"
+                << "Fighter is " << (f->getIsCooprative() ? "Cooprative" : "non-Cooprative") << "\n";
 			}
 			else {
 				Squire* sq = (Squire*)s;
@@ -526,7 +527,7 @@ void cloneAllSecMaps() {
 
 void idle() 
 {
-	Sleep(75);
+	Sleep(25); // so the game won't run too fast
 	if (bulletFired)
 	{
 		pb->move(maze);

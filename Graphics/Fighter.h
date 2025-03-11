@@ -13,12 +13,13 @@ private:
 	bool isReloading; // determines if the fighter is reloading
 	bool isCallingSquire; // determines if the fighter is in the calling squire queue
 	bool passive; // determines if the fighter is passive or aggressive meaning it will get closer to enemies
+	bool cooprative; // determines if the fighter will set its target according to its teammates target
 	int reloadTime;
 	Soldier* target;
 public:
 	Fighter(Position start_pos, TeamID tid);
 	~Fighter();
-	void engageEnemy(Position enemy_pos);
+	void engageEnemy();
 	void setAmmo(int a) { ammo = a; };
 	void setGrenadeCount(int g) { grenade_count = g; };
 	void setIsReloading(bool r) { isReloading = r; };
@@ -33,9 +34,10 @@ public:
 	bool getIsPassive() const { return passive; };
 	void setTarget(Soldier* t) { target = t; };
 	Soldier* getTarget() { return target; };
+	bool getIsCooprative() const { return cooprative; };
 	bool isEnemyInSight(Position enemy_pos);
 	bool isEnemyInSameRoomAsMe(Position enemy_pos);
-	void moveToEnemy(Position enemy_pos);
+	void moveToEnemy();
 	void addToSquireQueue();
 	void checkIfFitForFight();
 

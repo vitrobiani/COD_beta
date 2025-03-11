@@ -25,6 +25,7 @@ public:
 	array<double, 3> getFighterColor() { return teamColor.at(0); };
 	array<double, 3> getSquireColor() { return teamColor.at(1); };
 	int getSize() { return teamSize; };
+	static Soldier* findNearestEnemySoldier(Soldier* s);
 	static Position findNearestEnemy(Soldier* s);
 	static Position findNearestTeammate(Soldier* s);
 	static Soldier* findNearestTeammatePtr(Soldier* s);

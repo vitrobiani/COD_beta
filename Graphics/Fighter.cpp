@@ -11,6 +11,8 @@ Fighter::Fighter(Position start_pos, TeamID tid) : Soldier(start_pos, tid)
 	grenade_th = rand() % (MAX_GRENADE_CAPACITY_FIGHTER / 4);
 	isCallingSquire = false;
 	passive = (rand() % 2 == 0);
+	cooprative = (rand() % 2 == 0);
+	target = nullptr;
 }
 
 Fighter::~Fighter()
@@ -64,7 +66,7 @@ void Fighter::loadBullet(Position enemy_pos)
 	}
 }
 
-void Fighter::engageEnemy(Position enemy_pos)
+void Fighter::engageEnemy()
 {
 	if (isReloading)
 	{
@@ -80,7 +82,7 @@ void Fighter::engageEnemy(Position enemy_pos)
 		return;
 	}
 
-	if (!isEnemyInSight(enemy_pos))
+	if (!isEnemyInSight(target->getPos()) || !target->getIsAlive())
 	{
 		state->Transition(this);
 		return;
@@ -89,10 +91,10 @@ void Fighter::engageEnemy(Position enemy_pos)
 	int action = rand() % 100;
 	if (action > 30 && !isReloading)
 	{
-		loadBullet(enemy_pos);
+		loadBullet(target->getPos());
 	}
 	else if (action <= 30 && action > 15 && !isReloading) {
-		loadGrenade(enemy_pos);
+		loadGrenade(target->getPos());
 	}
 	else if (action <= 15) {
 		setIsMoving(true);
@@ -128,17 +130,17 @@ bool Fighter::isEnemyInSameRoomAsMe(Position enemy_pos)
 	return false;
 }
 
-void Fighter::moveToEnemy(Position enemy_pos)
+void Fighter::moveToEnemy()
 {
 	bool isEnemyInSightBool = false;
 	if (isMoving)
 	{
 		cloneMaze(maze, dupMaze);
-		Position c = runAS(dupMaze, security_maps.at(getID().team), enemy_pos);
+		Position c = runAS(dupMaze, security_maps.at(getID().team), target->getPos());
 		move(c);
-		isEnemyInSightBool = isEnemyInSight(enemy_pos);
+		isEnemyInSightBool = isEnemyInSight(target->getPos());
 	}
-	if ((isEnemyInSightBool && passive) || (isEnemyInSightBool && !passive && Team::calculateDistance(getPos(), enemy_pos) <= GRENADE_THROWING_DISTANCE))
+	if ((isEnemyInSightBool && passive) || (isEnemyInSightBool && !passive && Team::calculateDistance(getPos(), target->getPos()) <= GRENADE_THROWING_DISTANCE))
 		state->Transition(this);
 
 	// if fighter is passive he will make do with just the bullets

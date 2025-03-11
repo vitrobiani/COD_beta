@@ -12,7 +12,7 @@ using namespace std;
 constexpr int MSZ = 100;
 
 constexpr int TEAM_NUM = 2;
-constexpr int TEAM_SIZE = 2;
+constexpr int TEAM_SIZE = 3;
 
 constexpr int WIDTH = 700;
 constexpr int HEIGHT = 700;
@@ -62,7 +62,7 @@ constexpr int MAX_GRENADE_CAPACITY_SQUIRE = 20;
 constexpr int MAX_BULLET_CAPACITY_SQUIRE = 60;
 constexpr int MAX_BULLET_CAPACITY_FIGHTER = 12;
 constexpr int MAX_GRENADE_CAPACITY_FIGHTER = 8;
-constexpr int RELOAD_TIME_FIGHTER = 15;
+constexpr int RELOAD_TIME_FIGHTER = 10;
 
 constexpr int BFS_DEPTH = 1000;
 
