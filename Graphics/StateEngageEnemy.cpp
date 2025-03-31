@@ -19,7 +19,6 @@ void StateEngageEnemy::Transition(Soldier* p)
 
 	delete oldState;
 	oldState = nullptr;
-	//p->getState()->OnEnter(p);
 }
 
 void StateEngageEnemy::OnExit(Soldier* p)

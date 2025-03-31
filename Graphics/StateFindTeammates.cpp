@@ -17,7 +17,6 @@ void StateFindTeammates::Transition(Soldier* p)
 	p->setState(new StateTakeCover());
 	delete oldState;
 	oldState = nullptr;
-	p->getState()->OnEnter(p);
 }
 
 void StateFindTeammates::OnExit(Soldier* p)

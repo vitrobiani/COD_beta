@@ -10,7 +10,8 @@ class Grenade
 private:
 	double row, col;
 	//Bullet* bullets[NUM_BULLETS];
-	unique_ptr<Bullet> bullets[NUM_BULLETS];
+	//unique_ptr<Bullet> bullets[NUM_BULLETS];
+	vector<Bullet*> bullets;
 	bool isExpending;
 	TeamID id;
 public:

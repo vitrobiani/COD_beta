@@ -31,7 +31,6 @@ void StateSearchEnemy::OnEnter(Soldier* p)
 			f->setTarget(Team::findTarget(f));
 		}
 	}
-	//Position enemy_pos = Team::findNearestEnemy(f);
 	f->moveToEnemy();
 }
 
@@ -42,7 +41,6 @@ void StateSearchEnemy::Transition(Soldier* p)
 	p->setState(new StateEngageEnemy());
 	delete oldState;
 	oldState = nullptr;
-	//p->getState()->OnEnter(p);
 }
 
 void StateSearchEnemy::OnExit(Soldier* p)

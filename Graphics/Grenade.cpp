@@ -10,7 +10,8 @@ Grenade::Grenade(double r, double c)
 	for (i = 0; i < NUM_BULLETS; i++)
 	{
 		//bullets[i] = new Bullet(col, row, i * alpha);
-		bullets[i].reset(new Bullet(col, row, i * alpha));
+		//bullets[i].reset(new Bullet(col, row, i * alpha));
+		bullets.push_back(new Bullet(col, row, i * alpha));
 	}
 	isExpending = false;
 	id = TeamID{ -1, -1 };
@@ -25,7 +26,8 @@ Grenade::Grenade(double r, double c, TeamID tid)
 	for (i = 0; i < NUM_BULLETS; i++)
 	{
 		//bullets[i] = new Bullet(col, row, i * alpha, tid);
-		bullets[i].reset(new Bullet(col, row, i * alpha, tid));
+		//bullets[i].reset(new Bullet(col, row, i * alpha, tid));
+		bullets.push_back(new Bullet(col, row, i * alpha, tid));
 	}
 	id = tid;
 	isExpending = false;
@@ -37,7 +39,11 @@ Grenade::~Grenade()
 	for (i = 0; i < NUM_BULLETS; i++)
 	{
 		//bullets[i].reset();
-		bullets[i].release();
+		//bullets[i].release();
+		Bullet* toDel = bullets.back();
+		bullets.pop_back();
+		delete toDel;
+		toDel = nullptr;
 	}
 }
 
@@ -57,7 +63,8 @@ void Grenade::expand(int maze[MSZ][MSZ])
 	for (i = 0; i < NUM_BULLETS; i++)
 	{
 		bullets[i]->move(maze);
-		isStillExpending = bullets[i].get()->getIsMoving() || isStillExpending;
+		//isStillExpending = bullets[i].get()->getIsMoving() || isStillExpending;
+		isStillExpending = bullets.at(i)->getIsMoving() || isStillExpending;
 	}
 	isExpending = isStillExpending;
 }

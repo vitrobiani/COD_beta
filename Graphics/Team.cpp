@@ -169,14 +169,6 @@ double Team::calculateDistance(Position p1, Position p2)
 	return sqrt(pow(p1.row - p2.row, 2) + pow(p1.col - p2.col, 2));
 }
 
-//vector<Position> Team::getSoldiersPositions() {
-//	vector<Position> positions;
-//	for (Soldier* s : soldiers) {
-//		positions.push_back(s->getPos());
-//	}
-//	return positions;
-//}
-
 void Team::getEnemiesPositions(vector<Position>& positions) {
 	for (Team* t : Teams) {
 		if (t->getTeamID().team == teamID.team)

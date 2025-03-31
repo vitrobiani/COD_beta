@@ -14,7 +14,6 @@ void StateRestock::Transition(Soldier* p)
 	p->setState(new StateFindTeammates());
 	delete oldState;
 	oldState = nullptr;
-	p->getState()->OnEnter(p);
 }
 
 void StateRestock::OnExit(Soldier* p)

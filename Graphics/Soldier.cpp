@@ -26,11 +26,12 @@ Position Soldier::runAS(int maze[MSZ][MSZ], double* security_map, Position targe
     CompareCells comparator;
     priority_queue<Cell*, vector<Cell*>, CompareCells> grays(comparator);
     grays.push(new Cell(getPos().row, getPos().col, target.row, target.col, 0, nullptr, security_map));
+	vector<Cell*> used;
 
     Cell* to_go_to = nullptr;
     int i = 0;
 	while (!to_go_to) {
-		to_go_to = ASIteration(grays, maze, target);
+		to_go_to = ASIteration(grays, maze, target, used);
         i++;
 	}
 
@@ -42,11 +43,17 @@ Position Soldier::runAS(int maze[MSZ][MSZ], double* security_map, Position targe
         delete cellToPop;
 		cellToPop = nullptr;
     }
+    while (!used.empty()) {
+		Cell* cellToPop = used.back();
+        used.pop_back();
+        delete cellToPop;
+		cellToPop = nullptr;
+    }
 
     return p;
 }
 
-Cell* Soldier::ASIteration(priority_queue<Cell*, vector<Cell*>, CompareCells>& grays, int maze[MSZ][MSZ], Position target) {
+Cell* Soldier::ASIteration(priority_queue<Cell*, vector<Cell*>, CompareCells>& grays, int maze[MSZ][MSZ], Position target, vector<Cell*>& used) {
     if (grays.empty()) {
         return nullptr;
     }
@@ -78,6 +85,7 @@ Cell* Soldier::ASIteration(priority_queue<Cell*, vector<Cell*>, CompareCells>& g
     if (!go_on && (maze[row][col + 1] == SPACE || maze[row][col + 1] == SOLDIER || maze[row][col + 1] == AMMO_STASH || maze[row][col + 1] == HP_STASH))
         go_on = CheckNeighbor(row, col + 1, pCurrent, target, maze, grays);
 
+	used.push_back(pCurrent);
     return go_on;
 }
 
